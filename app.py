@@ -1,3 +1,4 @@
+import html
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
@@ -15,6 +16,11 @@ INITIAL_LEADS = [
     {"name":"Leo Martin","company":"Cobalt Creative","role":"Director","source":"LinkedIn","email":"leo@example.test","need":"No clear use case yet.","notes":"Open with discovery question.","status":"New","last_touch":"1 week ago"},
     {"name":"Nina Flores","company":"CloudNine Retail","role":"Customer Experience","source":"Referral","email":"nina@example.test","need":"Reduce time spent on manual lead tracking.","notes":"Follow-up was delayed.","status":"Follow-up","last_touch":"6 days ago"},
 ]
+
+def safe_html_text(value):
+    """Escape user-controlled text before embedding it in trusted HTML markup."""
+    return html.escape(str(value or ""), quote=True)
+
 
 def score_lead(lead):
     score = 35
@@ -149,7 +155,7 @@ p,[data-testid=stMarkdownContainer] p{line-height:1.7;font-size:1rem;color:#2635
 label,[data-testid=stWidgetLabel] p{color:#172a20!important;font-size:1.05rem!important;font-weight:700!important}
 [data-testid=stMetric]{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.25rem;box-shadow:0 2px 8px rgba(25,45,32,.04)}
 [data-testid=stMetricLabel]{color:#35483c!important;font-size:1rem!important;font-weight:700!important}
-[data-testid=stMetricValue]{color:var(--ink)!important;font-family:'DM Sans',sans-serif;font-size:2.4rem!important;font-weight:700!important}
+[data-testid=stMetricValue]{color:var(--ink)!important;font-family:'Space Grotesk','Manrope',sans-serif!important;font-size:2.4rem!important;font-weight:700!important}
 [data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:.85rem;box-shadow:0 5px 20px rgba(24,35,31,.045)}
 [data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1.5px solid #87998c!important;border-radius:8px!important;background:#fff!important;color:#17231c!important;font-size:1rem!important}
 [data-testid=stTextArea] textarea{line-height:1.65}
@@ -190,7 +196,7 @@ st.markdown("""
     <span style="font-size:16px;font-weight:800;letter-spacing:-.6px;color:#18231f">salespilot</span>
     <span style="font-size:12px;letter-spacing:.8px;color:#46564b;margin-left:5px">PRIVATE WORKSPACE</span>
   </div>
-  <div style="font-size:13px;color:#46564b;letter-spacing:.3px">SAMPLE DATA &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
+  <div style="font-size:13px;color:#46564b;letter-spacing:.3px">{"PRIVATE WORKSPACE" if PERSISTENT_MODE else "DEMO MODE · SESSION-ONLY DATA"} &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -201,7 +207,7 @@ with hero_l:
     st.markdown("<p style='font-size:16px;max-width:510px;margin-top:17px;line-height:1.75;color:#56645d'>A clearer view of your prospects, priorities, and next steps — all in one workspace.</p>", unsafe_allow_html=True)
 with hero_r:
     follow_up_count = sum(1 for item in st.session_state.leads if item.get("status") == "Follow-up")
-    st.markdown(f"<div style='margin-top:39px;background:#24634b;border-radius:16px;padding:24px 25px;color:#ffffff;min-height:160px'><div style='font-size:13px;letter-spacing:1.3px;color:#f3f7f3;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:'Space Grotesk',sans-serif;font-size:29px;font-weight:700;line-height:1.12;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
+    st.markdown(f"""<div style="margin-top:39px;background:#24634b;border-radius:16px;padding:24px 25px;color:#ffffff;min-height:160px"><div style="font-size:13px;letter-spacing:1.3px;color:#f3f7f3;font-weight:700">A NOTE FOR TODAY</div><div style="font-family:Space Grotesk,Manrope,sans-serif;font-size:29px;font-weight:700;line-height:1.12;margin-top:16px">Follow up with<br>intention.</div><div style="font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55">{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>""", unsafe_allow_html=True)
 
 leads = st.session_state.leads
 total = len(leads)
@@ -211,7 +217,7 @@ qualified = sum(l["status"] == "Qualified" for l in leads)
 
 st.markdown("<div style='font-size:13px;letter-spacing:1px;font-weight:800;color:#46564b;margin:28px 0 12px'>YOUR PIPELINE</div>", unsafe_allow_html=True)
 m1,m2,m3,m4 = st.columns(4)
-m1.metric("Total prospects", total, help="All sample prospects in this workspace")
+m1.metric("Total prospects", total, help="All prospects currently in this workspace")
 m2.metric("High-priority leads", hot)
 m3.metric("Need follow-up", follow)
 m4.metric("Qualified", qualified)
@@ -353,7 +359,10 @@ with st.container(border=True):
     idx = names.index(selected)
     lead = leads[idx]
     sc = score_lead(lead)
-    st.markdown(f"<div style='background:#f7f8fc;border:1px solid #eceef4;border-radius:14px;padding:18px 20px;margin:8px 0 16px'><div style='font:800 21px Manrope,sans-serif;color:#172033'>{lead['name']}</div><div style='color:#758096;font-size:13px;margin-top:4px'>{lead['role']} · {lead['company']}</div></div>", unsafe_allow_html=True)
+    safe_name = safe_html_text(lead["name"])
+    safe_role = safe_html_text(lead["role"])
+    safe_company = safe_html_text(lead["company"])
+    st.markdown(f"<div style='background:#f7f8fc;border:1px solid #eceef4;border-radius:14px;padding:18px 20px;margin:8px 0 16px'><div style='font:800 21px Manrope,sans-serif;color:#172033'>{safe_name}</div><div style='color:#758096;font-size:13px;margin-top:4px'>{safe_role} · {safe_company}</div></div>", unsafe_allow_html=True)
     a,b,c = st.columns(3)
     a.metric("Lead score",f"{sc}/100")
     b.metric("Priority",priority(sc))
@@ -452,5 +461,5 @@ with st.container(border=True):
     export = pd.DataFrame([{**l,"score":score_lead(l),"priority":priority(score_lead(l))} for l in st.session_state.leads])
     st.download_button("Download lead list as CSV", export.to_csv(index=False).encode("utf-8"), "salespilot_demo_leads.csv", "text/csv", type="primary")
     with st.expander("About this demo"):
-        st.write("SalesPilot is a portfolio prototype using local rule-based lead scoring and draft suggestions. It does not connect to a CRM, external AI provider, email, phone, or real customer database.")
+        st.write("SalesPilot is a portfolio prototype with rule-based lead scoring and reply suggestions. When accounts are enabled, prospect records are stored in Supabase and scoped to the signed-in user. It does not connect to an external CRM or send email, phone, or other outbound messages.")
         st.write("All names, organizations, and contact details are fictional placeholders.")
