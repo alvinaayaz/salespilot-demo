@@ -67,38 +67,51 @@ if "leads" not in st.session_state:
     st.session_state.leads = [dict(x) for x in INITIAL_LEADS]
 
 st.markdown("""<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
-:root{--ink:#172033;--muted:#758096;--line:#e8ebf2;--paper:#fff;--canvas:#f5f7fb;--accent:#635bdb;--accent-soft:#f0efff;--green:#168568}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+:root{--ink:#202923;--muted:#778078;--line:#e5e8e1;--paper:#fffefa;--canvas:#f6f6f1;--green:#285b45;--green-soft:#edf3ee;--rust:#bd654b}
 .stApp{background:var(--canvas);color:var(--ink);font-family:'DM Sans',sans-serif}
-.block-container{max-width:1240px;padding:2rem 2.25rem 4rem}
-h1,h2,h3{font-family:'Manrope',sans-serif!important;color:var(--ink);letter-spacing:-.04em}
-h1{font-size:2.35rem!important;font-weight:800!important;margin:0}
-h2{font-size:1.18rem!important;font-weight:750!important}
-h3{font-size:1.02rem!important;font-weight:700!important}
-p,[data-testid=stMarkdownContainer]{color:inherit}
-[data-testid=stCaptionContainer]{color:var(--muted)}
-[data-testid=stMetric]{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.15rem 1.25rem;box-shadow:0 2px 8px rgba(24,34,56,.025)}
-[data-testid=stMetricLabel]{font-size:.82rem;font-weight:600;color:var(--muted)}
-[data-testid=stMetricValue]{font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:var(--ink)}
-[data-testid=stVerticalBlockBorderWrapper]{background:#fff;border:1px solid var(--line);border-radius:18px;padding:.35rem;box-shadow:0 4px 18px rgba(24,34,56,.025)}
-[data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border-radius:10px!important;border-color:#e1e5ee!important;background:#fff}
-.stButton>button,.stDownloadButton>button{border-radius:10px;min-height:2.8rem;font-weight:700;border:1px solid var(--line);transition:all .18s ease}
-.stButton>button[kind=primary],.stDownloadButton>button[kind=primary]{background:var(--accent);border-color:var(--accent);color:white}
-.stButton>button[kind=primary]:hover,.stDownloadButton>button[kind=primary]:hover{background:#5149c6;border-color:#5149c6;transform:translateY(-1px)}
-[data-testid=stDataFrame]{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-[data-testid=stAlert]{border-radius:12px}
-hr{border-color:var(--line);margin:1.4rem 0}
+.block-container{max-width:1190px;padding:1.5rem 2.4rem 4rem}
+h1,h2,h3{color:var(--ink);letter-spacing:-.025em}
+h1{font-family:'Instrument Serif',serif!important;font-size:3.25rem!important;font-weight:400!important;line-height:1.02!important;margin:0}
+h2{font-family:'DM Sans',sans-serif!important;font-size:1.12rem!important;font-weight:700!important;letter-spacing:-.03em}
+h3{font-family:'DM Sans',sans-serif!important;font-size:1rem!important;font-weight:700!important}
+p{line-height:1.65}
+[data-testid=stCaptionContainer]{color:var(--muted);font-size:.82rem}
+[data-testid=stMetric]{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:1.05rem 1.15rem;box-shadow:none}
+[data-testid=stMetricLabel]{color:var(--muted);font-size:.77rem;font-weight:600}
+[data-testid=stMetricValue]{color:var(--ink);font-family:'Instrument Serif',serif;font-size:2.35rem;font-weight:400}
+[data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:.45rem;box-shadow:none}
+[data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1px solid #dfe4dc!important;border-radius:7px!important;background:#fffefa!important}
+[data-testid=stTextArea] textarea{line-height:1.65}
+.stButton>button,.stDownloadButton>button{border-radius:7px;min-height:2.65rem;font-weight:600;border:1px solid #dce2da;background:#fffefa;color:var(--ink)}
+.stButton>button[kind=primary],.stDownloadButton>button[kind=primary]{background:var(--green);border-color:var(--green);color:#fff}
+.stButton>button[kind=primary]:hover,.stDownloadButton>button[kind=primary]:hover{background:#1d4936;border-color:#1d4936}
+[data-testid=stDataFrame]{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+[data-testid=stAlert]{background:var(--green-soft);border:1px solid #dce8de;border-radius:8px;color:var(--ink)}
+hr{border-color:var(--line);margin:1.55rem 0}
 div[data-testid=stHorizontalBlock]{gap:1rem}
-@media(max-width:700px){.block-container{padding:1.2rem .9rem 3rem}h1{font-size:1.8rem!important}}
+@media(max-width:700px){.block-container{padding:1rem .85rem 3rem}h1{font-size:2.55rem!important}}
 </style>""", unsafe_allow_html=True)
 
-# Brand header and page introduction
-head_l, head_r = st.columns([3, 1])
-with head_l:
-    st.markdown("<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'><div style='width:38px;height:38px;border-radius:12px;background:#635bdb;color:white;display:grid;place-items:center;font-size:20px;font-weight:800'>S</div><span style='font:800 17px Manrope,sans-serif;letter-spacing:-.5px;color:#172033'>SalesPilot</span><span style='font-size:11px;color:#635bdb;background:#f0efff;padding:5px 9px;border-radius:20px;font-weight:700'>WORKSPACE</span></div>", unsafe_allow_html=True)
-    st.markdown("<h1 style='margin-top:22px'>Good morning. Here's your pipeline.</h1><p style='color:#758096;margin-top:7px;font-size:15px'>A calmer way to keep every prospect moving.</p>", unsafe_allow_html=True)
-with head_r:
-    st.markdown("<div style='text-align:right;padding-top:10px;color:#758096;font-size:12px'>DEMO WORKSPACE<br><b style='color:#172033;font-size:13px'>Sample data · No messages sent</b></div>", unsafe_allow_html=True)
+# A quiet, editorial workspace: clear hierarchy over dashboard clutter
+st.markdown("""
+<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 18px;border-bottom:1px solid #e5e8e1">
+  <div style="display:flex;align-items:center;gap:11px">
+    <div style="width:31px;height:31px;background:#285b45;color:#fffefa;display:grid;place-items:center;font-family:'Instrument Serif',serif;font-size:23px;border-radius:7px">s</div>
+    <span style="font-size:15px;font-weight:700;letter-spacing:-.4px;color:#202923">salespilot</span>
+    <span style="font-size:10px;letter-spacing:1.1px;color:#778078;margin-left:5px">PRIVATE WORKSPACE</span>
+  </div>
+  <div style="font-size:11px;color:#778078;letter-spacing:.4px">SAMPLE DATA &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
+</div>
+""", unsafe_allow_html=True)
+
+hero_l, hero_r = st.columns([1.7, 1], gap="large")
+with hero_l:
+    st.markdown("<div style='margin-top:35px;font-size:10px;letter-spacing:2px;font-weight:700;color:#285b45;margin-bottom:13px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
+    st.markdown("<h1>Make room for<br><em style='color:#285b45'>good conversations.</em></h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#778078;font-size:14px;max-width:440px;margin-top:13px'>A considered view of your prospects, priorities and the next small step that moves a relationship forward.</p>", unsafe_allow_html=True)
+with hero_r:
+    st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:10px;letter-spacing:1.7px;color:#c7d8cc;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:12px;color:#d5e0d7;margin-top:13px'>{sum(l["status"] == "Follow-up" for l in st.session_state.leads)} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
 
 leads = st.session_state.leads
 total = len(leads)
@@ -106,14 +119,14 @@ hot = sum(score_lead(l) >= 75 for l in leads)
 follow = sum(l["status"] == "Follow-up" for l in leads)
 qualified = sum(l["status"] == "Qualified" for l in leads)
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>AT A GLANCE</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>THE PIPELINE, AT A GLANCE</div>", unsafe_allow_html=True)
 m1,m2,m3,m4 = st.columns(4)
 m1.metric("Total prospects", total, help="All sample prospects in this workspace")
 m2.metric("High-priority leads", hot)
 m3.metric("Need follow-up", follow)
 m4.metric("Qualified", qualified)
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>PIPELINE OVERVIEW</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>WHERE THINGS STAND</div>", unsafe_allow_html=True)
 left, right = st.columns([1.65,1], gap="large")
 with left:
     with st.container(border=True):
@@ -130,7 +143,7 @@ with right:
         snap = pd.DataFrame({"Priority":["High","Medium","Low"],"Count":[sum(priority(score_lead(l))==p for l in leads) for p in ["High","Medium","Low"]]})
         st.bar_chart(snap.set_index("Priority"), color="#8a83ed")
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>YOUR WORKSPACE</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>THE PEOPLE BEHIND THE NUMBERS</div>", unsafe_allow_html=True)
 with st.container(border=True):
     st.subheader("Prospect inbox")
     st.caption("Search, filter and review the people in your pipeline.")
