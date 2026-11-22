@@ -10,6 +10,6 @@ def safe_html_text(value: object) -> str:
 def safe_csv_value(value: object) -> str:
     """Prefix spreadsheet formula-like values so CSV exports open as text."""
     text = "" if value is None else str(value)
-    if re.match(r"^[\\t\\r\\n ]*[=+\\-@]", text):
+    if re.match(r"^[\t\r\n ]*[=+\-@]", text):
         return "'" + text
     return text
