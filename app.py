@@ -166,6 +166,46 @@ with st.container(border=True):
         st.info("No leads match these filters.")
 
 with st.container(border=True):
+    st.subheader("Add a prospect")
+    st.caption("Create a lead in this workspace. Fields marked * are required.")
+    with st.form("add_lead_form", clear_on_submit=True):
+        add_a, add_b = st.columns(2)
+        new_name = add_a.text_input("Contact name *", placeholder="Jordan Lee")
+        new_company = add_b.text_input("Company *", placeholder="Company name")
+        add_c, add_d = st.columns(2)
+        new_role = add_c.text_input("Role", placeholder="Founder, Sales Manager…")
+        new_email = add_d.text_input("Email", placeholder="name@company.com")
+        new_source = st.selectbox("Lead source", ["Website inquiry", "LinkedIn", "Referral", "Cold outreach", "Other"])
+        new_need = st.text_area("What are they looking for? *", placeholder="Describe their goal, challenge, or request.")
+        new_notes = st.text_area("Notes", placeholder="Useful context for your next conversation.")
+        new_status = st.selectbox("Initial stage", ["New", "Contacted", "Qualified", "Follow-up"])
+        add_submitted = st.form_submit_button("Add prospect", type="primary", use_container_width=True)
+        if add_submitted:
+            clean_name = new_name.strip()
+            clean_company = new_company.strip()
+            clean_email = new_email.strip()
+            if not clean_name or not clean_company or not new_need.strip():
+                st.error("Please complete the contact name, company, and need.")
+            elif clean_email and ("@" not in clean_email or "." not in clean_email.rsplit("@", 1)[-1]):
+                st.error("Enter a valid email address, or leave it blank.")
+            elif any(x["name"].casefold() == clean_name.casefold() and x["company"].casefold() == clean_company.casefold() for x in st.session_state.leads):
+                st.error("This contact already exists for that company.")
+            else:
+                st.session_state.leads.append({
+                    "name": clean_name,
+                    "company": clean_company,
+                    "role": new_role.strip() or "Not specified",
+                    "source": new_source,
+                    "email": clean_email,
+                    "need": new_need.strip(),
+                    "notes": new_notes.strip(),
+                    "status": new_status,
+                    "last_touch": "Added just now",
+                })
+                st.success(f"{clean_name} was added to your pipeline.")
+                st.rerun()
+
+with st.container(border=True):
     st.subheader("Lead desk")
     st.caption("Review a prospect and decide on the next best action.")
     names = [f'{l["name"]} — {l["company"]}' for l in leads]
@@ -178,6 +218,41 @@ with st.container(border=True):
     a.metric("Lead score",f"{sc}/100")
     b.metric("Priority",priority(sc))
     c.metric("Pipeline stage",lead["status"])
+    with st.expander("Edit prospect details"):
+        with st.form("edit_lead_form"):
+            edit_a, edit_b = st.columns(2)
+            edit_name = edit_a.text_input("Contact name", value=lead["name"])
+            edit_company = edit_b.text_input("Company", value=lead["company"])
+            edit_c, edit_d = st.columns(2)
+            edit_role = edit_c.text_input("Role", value=lead["role"])
+            edit_email = edit_d.text_input("Email", value=lead["email"])
+            source_options = ["Website inquiry", "LinkedIn", "Referral", "Cold outreach", "Other"]
+            edit_source = st.selectbox("Lead source", source_options, index=source_options.index(lead["source"]) if lead["source"] in source_options else 4)
+            edit_need = st.text_area("Need", value=lead["need"])
+            edit_notes = st.text_area("Notes", value=lead["notes"])
+            stage_options = ["New", "Contacted", "Qualified", "Follow-up", "Won", "Lost"]
+            edit_status = st.selectbox("Pipeline stage", stage_options, index=stage_options.index(lead["status"]))
+            saved = st.form_submit_button("Save changes", type="primary", use_container_width=True)
+            if saved:
+                clean_edit_name = edit_name.strip()
+                clean_edit_company = edit_company.strip()
+                clean_edit_email = edit_email.strip()
+                duplicate = any(i != idx and x["name"].casefold() == clean_edit_name.casefold() and x["company"].casefold() == clean_edit_company.casefold() for i, x in enumerate(st.session_state.leads))
+                if not clean_edit_name or not clean_edit_company or not edit_need.strip():
+                    st.error("Name, company, and need cannot be blank.")
+                elif clean_edit_email and ("@" not in clean_edit_email or "." not in clean_edit_email.rsplit("@", 1)[-1]):
+                    st.error("Enter a valid email address, or leave it blank.")
+                elif duplicate:
+                    st.error("Another prospect already has this name and company.")
+                else:
+                    st.session_state.leads[idx].update({
+                        "name": clean_edit_name, "company": clean_edit_company,
+                        "role": edit_role.strip() or "Not specified", "email": clean_edit_email,
+                        "source": edit_source, "need": edit_need.strip(),
+                        "notes": edit_notes.strip(), "status": edit_status,
+                    })
+                    st.success("Prospect details saved.")
+                    st.rerun()
     st.markdown("**Signal / need**")
     st.write(lead["need"])
     st.markdown("**Context**")
