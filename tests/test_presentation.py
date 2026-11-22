@@ -1,6 +1,6 @@
 import unittest
 
-from presentation import matches_lead_search, safe_csv_value, safe_html_text
+from presentation import matches_lead_search, safe_csv_value, safe_html_text, sort_leads
 
 
 class PresentationTests(unittest.TestCase):
@@ -40,6 +40,24 @@ class PresentationTests(unittest.TestCase):
 
     def test_blank_search_matches_every_lead(self):
         self.assertTrue(matches_lead_search({"name": "Jordan"}, "  "))
+
+    def test_sort_leads_prioritizes_high_priority_and_score(self):
+        leads = [
+            {"name": "Zara", "Priority": "Low", "Score": 40},
+            {"name": "Maya", "Priority": "High", "Score": 80},
+            {"name": "Omar", "Priority": "High", "Score": 90},
+        ]
+        result = sort_leads(leads, "Priority first")
+        self.assertEqual([lead["name"] for lead in result], ["Omar", "Maya", "Zara"])
+        self.assertEqual(leads[0]["name"], "Zara")
+
+    def test_sort_leads_supports_score_and_name_order(self):
+        leads = [
+            {"name": "Zara", "Priority": "Low", "Score": 40},
+            {"name": "Maya", "Priority": "High", "Score": 80},
+        ]
+        self.assertEqual([x["name"] for x in sort_leads(leads, "Score: high to low")], ["Maya", "Zara"])
+        self.assertEqual([x["name"] for x in sort_leads(leads, "Name: A to Z")], ["Maya", "Zara"])
 
 
 if __name__ == "__main__":
