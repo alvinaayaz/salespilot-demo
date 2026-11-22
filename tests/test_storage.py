@@ -120,6 +120,24 @@ class StorageTests(unittest.TestCase):
         self.assertEqual(result["id"], "test-0")
         self.assertEqual(client.queries[0].payload["user_id"], "user-456")
 
+    def test_bulk_insert_assigns_user_id_to_every_prospect(self):
+        client = FakeClient()
+        leads = [
+            {"name": "A", "company": "One", "need": "Need one"},
+            {"name": "B", "company": "Two", "need": "Need two"},
+        ]
+
+        result = storage.insert_leads(client, "user-batch", leads)
+
+        self.assertEqual([row["id"] for row in result], ["test-0", "test-1"])
+        self.assertEqual(len(client.queries[0].payload), 2)
+        self.assertTrue(all(row["user_id"] == "user-batch" for row in client.queries[0].payload))
+
+    def test_bulk_insert_empty_list_does_not_call_database(self):
+        client = FakeClient()
+        self.assertEqual(storage.insert_leads(client, "user-batch", []), [])
+        self.assertEqual(client.queries, [])
+
     def test_update_is_scoped_to_user_and_record(self):
         client = FakeClient()
         storage.update_lead(
