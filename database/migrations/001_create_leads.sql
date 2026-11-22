@@ -42,4 +42,9 @@ create policy "Users can delete their own leads"
     on public.leads for delete to authenticated
     using ((select auth.uid()) = user_id);
 
+-- Keep anonymous API clients out of the leads table entirely.
+revoke all privileges on table public.leads from anon;
+
+-- Authenticated users need CRUD only; row ownership is enforced by RLS.
+revoke truncate, references, trigger on table public.leads from authenticated;
 grant select, insert, update, delete on public.leads to authenticated;
