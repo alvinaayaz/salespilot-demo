@@ -59,6 +59,18 @@ def insert_lead(client: Client, user_id: str, lead: dict[str, Any]) -> dict[str,
     return _normalise(result.data[0])
 
 
+def insert_leads(client: Client, user_id: str, leads: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Insert a batch of prospects for the authenticated user."""
+    if not leads:
+        return []
+    result = client.table("leads").insert(
+        [_payload(lead, user_id) for lead in leads]
+    ).execute()
+    if len(result.data or []) != len(leads):
+        raise RuntimeError("The database did not return every imported prospect.")
+    return [_normalise(row) for row in result.data]
+
+
 def update_lead(client: Client, user_id: str, lead: dict[str, Any]) -> None:
     lead_id = lead.get("id")
     if not lead_id:
