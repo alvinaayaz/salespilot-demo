@@ -11,6 +11,7 @@ SalesPilot is a lightweight sales workspace for independent professionals and sm
 - Review transparent, rule-based lead scores and priority signals
 - See suggested next steps for each prospect
 - Prepare and edit outreach drafts without sending anything automatically
+- Import prospect lists from validated CSV files, with duplicate detection and a downloadable template
 - Export your pipeline to CSV
 
 ## Your workspace
