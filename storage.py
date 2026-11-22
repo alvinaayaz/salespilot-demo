@@ -74,3 +74,20 @@ def update_lead(client: Client, user_id: str, lead: dict[str, Any]) -> None:
     )
     if not result.data:
         raise RuntimeError("The prospect was not updated.")
+
+
+
+def delete_lead(client: Client, user_id: str, lead_id: str) -> None:
+    """Delete one prospect only when it belongs to the authenticated user."""
+    if not lead_id:
+        raise ValueError("Cannot delete a prospect without its database ID.")
+    result = (
+        client.table("leads")
+        .delete()
+        .eq("id", lead_id)
+        .eq("user_id", user_id)
+        .select("id")
+        .execute()
+    )
+    if not result.data:
+        raise RuntimeError("The prospect was not deleted.")
