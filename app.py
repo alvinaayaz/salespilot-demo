@@ -158,7 +158,13 @@ input::placeholder,textarea::placeholder{color:#526258!important;opacity:1!impor
 .stButton>button[kind=primary],.stDownloadButton>button[kind=primary]{background:var(--green);border-color:var(--green);color:#fff}
 .stButton>button[kind=primary]:hover,.stDownloadButton>button[kind=primary]:hover{background:#183e2c;border-color:#183e2c;color:#fff}
 [data-testid=stDataFrame]{border:1px solid var(--line);border-radius:9px;overflow:hidden}
-[data-testid=stAlert]{background:var(--green-soft);border:1px solid #cbdccc;border-radius:9px;color:var(--ink)}
+[data-testid=stAlert]{background:#e5efe7!important;border:1px solid #b8cbbb!important;border-radius:9px;color:#14231b!important}
+[data-testid=stAlert] *{color:#14231b!important}
+[data-testid="stBaseButton-primary"],[data-testid="stDownloadButton"] button[kind="primary"],.stButton button[kind="primary"]{background:#1e5138!important;border:1.5px solid #1e5138!important;color:#ffffff!important}
+[data-testid="stBaseButton-primary"] *,[data-testid="stDownloadButton"] button[kind="primary"] *,.stButton button[kind="primary"] *{color:#ffffff!important}
+[data-testid="stBaseButton-primary"]:hover,.stButton button[kind="primary"]:hover{background:#173f2c!important;border-color:#173f2c!important}
+[data-testid="stSelectbox"] [data-baseweb="select"]>div{background:#ffffff!important;border-color:#87998c!important;color:#17231c!important}
+[data-testid="stSelectbox"] [data-baseweb="select"] *{color:#17231c!important}
 [data-testid=stExpander]{border-color:var(--line)!important}
 hr{border-color:var(--line);margin:1.7rem 0}
 div[data-testid=stHorizontalBlock]{gap:1.1rem}
