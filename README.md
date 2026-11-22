@@ -1,6 +1,6 @@
 # SalesPilot
 
-SalesPilot is a lightweight sales-workspace prototype for managing a small prospect pipeline.
+SalesPilot is a lightweight sales workspace for managing a small prospect pipeline.
 
 ## Current capabilities
 
@@ -9,7 +9,8 @@ SalesPilot is a lightweight sales-workspace prototype for managing a small prosp
 - Rule-based lead scoring with suggested next steps
 - Add and edit prospect records with basic field validation
 - Update pipeline stage and mark follow-up activity
-- Edit outreach drafts and export the current pipeline to CSV
+- Editable outreach drafts and CSV export
+- Optional Supabase authentication and per-user persistent lead storage
 
 ## Run locally
 
@@ -18,18 +19,35 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Deployment
+## Enable accounts and persistent storage
 
-The public demo is hosted on Streamlit Community Cloud:
+The app stays in clearly labelled demo mode until both `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured in Streamlit secrets.
+
+1. Create a free Supabase project.
+2. In the Supabase SQL Editor, run the migration in `supabase/migrations/001_create_leads.sql`.
+3. In Supabase project settings, copy the Project URL and the public anon/publishable key. Never use the service-role key in this app.
+4. In Streamlit Community Cloud, open the app's **Settings → Secrets** and add:
+
+```toml
+SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co"
+SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY"
+```
+
+5. Restart the Streamlit app. Visitors will then see sign-in and account creation instead of the shared sample dashboard.
+
+Supabase Auth email confirmation settings apply to new accounts. The app uses the public anon key and relies on PostgreSQL row-level security; each authenticated account can access only rows whose `user_id` matches its auth user ID.
+
+## Public demo
+
 https://salespilot-demo.streamlit.app/
 
 ## Important limitations
 
-- Prospect records currently live in Streamlit session state. They are temporary and are not shared across users or guaranteed to survive a session ending, app restart, or redeploy.
-- The included leads are fictional examples. Do not enter real customer or confidential data.
-- Lead scoring and outreach suggestions are rule-based, not AI-generated.
-- There is no login, multi-user access control, external CRM connection, persistent database, or outbound email/phone integration yet.
-- Reply drafts are editable suggestions and are never sent.
+- Without Supabase secrets, the public app runs in demo mode with fictional leads held only in Streamlit session state.
+- With Supabase configured, lead records persist in PostgreSQL and are scoped by authenticated user.
+- The app currently has no password-reset screen, team sharing, external CRM connection, AI provider, or outbound email/phone integration.
+- Lead scoring and outreach suggestions are rule-based, not AI-generated. Reply drafts are never sent.
+- Use fictional data until you have reviewed the deployment's privacy, account-recovery, and operational requirements.
 
 ## Validation
 
