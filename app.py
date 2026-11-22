@@ -27,12 +27,41 @@ def priority(score):
     return "High" if score >= 75 else "Medium" if score >= 55 else "Low"
 
 def draft_reply(lead):
-    need = lead["need"].strip()
+    first_name = lead["name"].split()[0]
+    need = lead["need"].strip().lower()
+
     if lead["status"] == "Follow-up":
-        return f"Hi {lead['name'].split()[0]}, just checking back on this. Is improving your process for {need.lower()} still a priority? Happy to share a few ideas if useful."
-    if "pricing" in need.lower():
-        return f"Hi {lead['name'].split()[0]}, thanks for your interest. I can share a straightforward overview of pricing and what is included. What would be most useful for your team?"
-    return f"Hi {lead['name'].split()[0]}, thanks for reaching out. I saw that you're looking at {need.lower()} Would it be helpful if I shared a couple of practical options based on your workflow?"
+        return (
+            f"Hi {first_name}, just checking back on my earlier note. "
+            "Is this still something you're exploring? Happy to share a few "
+            "practical ideas if that would be useful."
+        )
+
+    if "pricing" in need:
+        return (
+            f"Hi {first_name}, thanks for your interest. I can share a clear "
+            "overview of the pricing and what's included. Is there a particular "
+            "feature or team need you'd like me to focus on?"
+        )
+
+    if "organize inbound sales inquiries" in need:
+        context = "organizing your inbound sales inquiries"
+    elif "automating repetitive follow-ups" in need:
+        context = "automating repetitive follow-ups"
+    elif "better visibility into lead priorities" in need:
+        context = "getting a clearer view of lead priorities"
+    elif "comparing options for team workflow" in need:
+        context = "finding a workflow that fits your team"
+    elif "reduce time spent on manual lead tracking" in need:
+        context = "spending less time on manual lead tracking"
+    else:
+        context = "making your sales workflow easier to manage"
+
+    return (
+        f"Hi {first_name}, thanks for reaching out. I saw you're exploring "
+        f"{context}. Would it be helpful if I shared a couple of practical "
+        "ideas based on how your team works today?"
+    )
 
 if "leads" not in st.session_state:
     st.session_state.leads = [dict(x) for x in INITIAL_LEADS]
