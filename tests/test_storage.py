@@ -20,7 +20,7 @@ class FakeQuery:
         self.returning = False
 
     def select(self, *_args, **_kwargs):
-        if self.operation == "update":
+        if self.operation in ("update", "delete"):
             self.returning = True
         else:
             self.operation = "select"
@@ -53,7 +53,7 @@ class FakeQuery:
         if self.operation == "insert":
             rows = self.payload if isinstance(self.payload, list) else [self.payload]
             return FakeResponse([{**row, "id": f"test-{i}"} for i, row in enumerate(rows)])
-        return FakeResponse([{"id": "test-id"}] if self.returning and self.update_rows else [])
+        return FakeResponse([{"id": "test-id"}] if self.operation in ("update", "delete") and self.returning and self.update_rows else [])
 
 
 class FakeClient:
