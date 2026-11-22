@@ -54,7 +54,7 @@ class ProspectImportTests(unittest.TestCase):
         self.assertIn("2 MB", parse_prospect_csv(b"x" * (2 * 1024 * 1024 + 1))[1][0])
 
     def test_skips_blank_rows_and_reports_missing_required_values(self):
-        data = b"name,company,need\n,,,\nJordan,Northstar,\nMaya,Studio,Need\n"
+        data = b"name,company,need\n,,\nJordan,Northstar,\nMaya,Studio,Need\n"
         leads, errors = parse_prospect_csv(data)
         self.assertEqual([lead["name"] for lead in leads], ["Maya"])
         self.assertEqual(len(errors), 1)
