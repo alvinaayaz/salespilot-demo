@@ -102,8 +102,7 @@ idx = names.index(selected)
 lead = leads[idx]
 sc = score_lead(lead)
 a,b,c = st.columns([2,1,1])
-a.markdown(f"### {lead['name']}  
-**{lead['role']} · {lead['company']}**")
+a.markdown(f"### {lead['name']}  \n**{lead['role']} · {lead['company']}**")
 b.metric("Lead score",f"{sc}/100")
 c.metric("Priority",priority(sc))
 st.write("**Signal / need**",lead["need"])
