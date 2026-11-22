@@ -137,24 +137,24 @@ else:
 
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
-:root{--ink:#17231c;--muted:#4d5b52;--line:#d7ded7;--paper:#ffffff;--canvas:#f4f6f2;--green:#24543d;--green-soft:#edf4ee;--rust:#9b4c35}
+:root{--ink:#14231b;--muted:#35483c;--line:#c4d0c6;--paper:#ffffff;--canvas:#eef2ed;--green:#1e5138;--green-soft:#e5efe7;--rust:#8b3b2b}
 .stApp{background:var(--canvas);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:16px}
-.block-container{max-width:1280px;padding:1.6rem 2.5rem 4rem}
+.block-container{max-width:1320px;padding:1.8rem 2.6rem 4rem}
 h1,h2,h3{color:var(--ink);letter-spacing:-.025em}
-h1{font-family:'Instrument Serif',serif!important;font-size:3.5rem!important;font-weight:400!important;line-height:1.04!important;margin:0}
+h1{font-family:'Instrument Serif',serif!important;font-size:3.8rem!important;font-weight:400!important;line-height:1.04!important;margin:0}
 h2{font-family:'DM Sans',sans-serif!important;font-size:1.35rem!important;font-weight:700!important;letter-spacing:-.02em}
 h3{font-family:'DM Sans',sans-serif!important;font-size:1.12rem!important;font-weight:700!important}
 p,[data-testid=stMarkdownContainer] p{line-height:1.7;font-size:1rem;color:#26352c}
 [data-testid=stCaptionContainer],.stCaption{color:#4d5b52!important;font-size:.95rem!important;line-height:1.55}
-label,[data-testid=stWidgetLabel] p{color:#26352c!important;font-size:1rem!important;font-weight:600!important}
+label,[data-testid=stWidgetLabel] p{color:#172a20!important;font-size:1.05rem!important;font-weight:700!important}
 [data-testid=stMetric]{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.25rem;box-shadow:0 2px 8px rgba(25,45,32,.04)}
-[data-testid=stMetricLabel]{color:#46564b!important;font-size:.92rem!important;font-weight:700!important}
-[data-testid=stMetricValue]{color:var(--ink)!important;font-family:'DM Sans',sans-serif;font-size:2.25rem!important;font-weight:700!important}
+[data-testid=stMetricLabel]{color:#35483c!important;font-size:1rem!important;font-weight:700!important}
+[data-testid=stMetricValue]{color:var(--ink)!important;font-family:'DM Sans',sans-serif;font-size:2.4rem!important;font-weight:700!important}
 [data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:.7rem;box-shadow:0 2px 10px rgba(25,45,32,.035)}
-[data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1px solid #aebbb0!important;border-radius:8px!important;background:#fff!important;color:#17231c!important;font-size:1rem!important}
+[data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1.5px solid #87998c!important;border-radius:8px!important;background:#fff!important;color:#17231c!important;font-size:1rem!important}
 [data-testid=stTextArea] textarea{line-height:1.65}
-input::placeholder,textarea::placeholder{color:#66736a!important;opacity:1!important}
-.stButton>button,.stDownloadButton>button{border-radius:8px;min-height:2.9rem;font-size:1rem;font-weight:700;border:1px solid #aebbb0;background:#fff;color:#17231c}
+input::placeholder,textarea::placeholder{color:#526258!important;opacity:1!important}
+.stButton>button,.stDownloadButton>button{border-radius:8px;min-height:2.9rem;font-size:1.05rem;font-weight:700;border:1.5px solid #87998c;background:#fff;color:#17231c}
 .stButton>button[kind=primary],.stDownloadButton>button[kind=primary]{background:var(--green);border-color:var(--green);color:#fff}
 .stButton>button[kind=primary]:hover,.stDownloadButton>button[kind=primary]:hover{background:#183e2c;border-color:#183e2c;color:#fff}
 [data-testid=stDataFrame]{border:1px solid var(--line);border-radius:9px;overflow:hidden}
@@ -190,12 +190,12 @@ st.markdown("""
 
 hero_l, hero_r = st.columns([1.7, 1], gap="large")
 with hero_l:
-    st.markdown("<div style='margin-top:35px;font-size:12px;letter-spacing:1.7px;font-weight:800;color:#24543d;margin-bottom:13px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
-    st.markdown("<h1>Make room for<br><em style='color:#285b45'>good conversations.</em></h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color:#778078;font-size:16px;max-width:500px;margin-top:16px;line-height:1.7;color:#46564b'>A considered view of your prospects, priorities and the next small step that moves a relationship forward.</p>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:35px;font-size:13px;letter-spacing:1.4px;font-weight:800;color:#1e5138;margin-bottom:13px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
+    st.markdown("<h1>Your sales,<br><em style='color:#1e5138'>in clear view.</em></h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#35483c;font-size:17px;max-width:500px;margin-top:16px;line-height:1.7;color:#46564b'>See every prospect, track what matters, and know who to follow up with next.</p>", unsafe_allow_html=True)
 with hero_r:
     follow_up_count = sum(1 for item in st.session_state.leads if item.get("status") == "Follow-up")
-st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:12px;letter-spacing:1.5px;color:#e1ebe3;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:13px;letter-spacing:1.3px;color:#f3f7f3;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
 
 leads = st.session_state.leads
 total = len(leads)
@@ -203,14 +203,14 @@ hot = sum(score_lead(l) >= 75 for l in leads)
 follow = sum(l["status"] == "Follow-up" for l in leads)
 qualified = sum(l["status"] == "Qualified" for l in leads)
 
-st.markdown("<div style='font-size:13px;letter-spacing:1px;font-weight:800;color:#46564b;margin:28px 0 12px'>THE PIPELINE, AT A GLANCE</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:13px;letter-spacing:1px;font-weight:800;color:#46564b;margin:28px 0 12px'>YOUR PIPELINE</div>", unsafe_allow_html=True)
 m1,m2,m3,m4 = st.columns(4)
 m1.metric("Total prospects", total, help="All sample prospects in this workspace")
 m2.metric("High-priority leads", hot)
 m3.metric("Need follow-up", follow)
 m4.metric("Qualified", qualified)
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>WHERE THINGS STAND</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#35483c;margin:30px 0 14px'>WHERE THINGS STAND</div>", unsafe_allow_html=True)
 left, right = st.columns([1.65,1], gap="large")
 with left:
     with st.container(border=True):
@@ -219,18 +219,18 @@ with left:
         statuses = ["New","Contacted","Qualified","Follow-up","Won","Lost"]
         counts = pd.Series([l["status"] for l in leads]).value_counts()
         pipe = pd.DataFrame({"Stage":statuses,"Leads":[int(counts.get(s,0)) for s in statuses]})
-        st.bar_chart(pipe.set_index("Stage"), color="#635bdb")
+        st.bar_chart(pipe.set_index("Stage"), color="#24543d")
 with right:
     with st.container(border=True):
         st.subheader("Priority snapshot")
         st.caption("Where your attention may be needed")
         snap = pd.DataFrame({"Priority":["High","Medium","Low"],"Count":[sum(priority(score_lead(l))==p for l in leads) for p in ["High","Medium","Low"]]})
-        st.bar_chart(snap.set_index("Priority"), color="#8a83ed")
+        st.bar_chart(snap.set_index("Priority"), color="#9a593e")
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>THE PEOPLE BEHIND THE NUMBERS</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#35483c;margin:30px 0 14px'>YOUR PROSPECTS</div>", unsafe_allow_html=True)
 with st.container(border=True):
     st.subheader("Prospect inbox")
-    st.caption("Search, filter and review the people in your pipeline.")
+    st.caption("Find a prospect, filter by stage, and open their details.")
     c1,c2,c3 = st.columns([1.5,1,1])
     search = c1.text_input("Search leads", placeholder="Name, company, or need")
     stage_filter = c2.selectbox("Pipeline stage",["All"]+["New","Contacted","Qualified","Follow-up","Won","Lost"])
@@ -251,7 +251,7 @@ with st.container(border=True):
 
 with st.container(border=True):
     st.subheader("Add a prospect")
-    st.caption("Create a lead in this workspace. Fields marked * are required.")
+    st.caption("Add someone to your pipeline. Name, company, and need are required.")
     with st.form("add_lead_form", clear_on_submit=True):
         add_a, add_b = st.columns(2)
         new_name = add_a.text_input("Contact name *", placeholder="Jordan Lee")
@@ -298,7 +298,7 @@ with st.container(border=True):
 
 with st.container(border=True):
     st.subheader("Lead desk")
-    st.caption("Review a prospect and decide on the next best action.")
+    st.caption("Open a prospect to review details, update their stage, or prepare a reply.")
     names = [f'{l["name"]} — {l["company"]}' for l in leads]
     selected = st.selectbox("Choose a prospect", names)
     idx = names.index(selected)
@@ -366,7 +366,7 @@ with st.container(border=True):
         st.info("Keep this lead warm. Share a useful resource or revisit when you have a stronger signal.")
     st.markdown("#### Reply draft")
     draft = st.text_area("Draft (edit before use)", value=draft_reply(lead), height=145)
-    st.caption("An editable suggestion only. SalesPilot never sends emails, texts, or calls.")
+    st.caption("Draft only. Nothing is sent from SalesPilot.")
     col1,col2 = st.columns([1,1])
     with col1:
         if st.button("Mark as contacted", use_container_width=True, type="primary"):
@@ -393,7 +393,7 @@ with st.container(border=True):
 
 with st.container(border=True):
     st.subheader("Export your pipeline")
-    st.caption("Take your sample lead list with you as a CSV file.")
+    st.caption("Download a copy of the prospects in this workspace.")
     export = pd.DataFrame([{**l,"score":score_lead(l),"priority":priority(score_lead(l))} for l in st.session_state.leads])
     st.download_button("Download lead list as CSV", export.to_csv(index=False).encode("utf-8"), "salespilot_demo_leads.csv", "text/csv", type="primary")
     with st.expander("About this demo"):
