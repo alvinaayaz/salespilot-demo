@@ -16,9 +16,13 @@ class FakeQuery:
         self.filters = []
         self.operation = "select"
         self.payload = None
+        self.returning = False
 
     def select(self, *_args, **_kwargs):
-        self.operation = "select"
+        if self.operation == "update":
+            self.returning = True
+        else:
+            self.operation = "select"
         return self
 
     def eq(self, field, value):
@@ -44,7 +48,7 @@ class FakeQuery:
         if self.operation == "insert":
             rows = self.payload if isinstance(self.payload, list) else [self.payload]
             return FakeResponse([{**row, "id": f"test-{i}"} for i, row in enumerate(rows)])
-        return FakeResponse([{"id": "test-id"}])
+        return FakeResponse([{"id": "test-id"}] if self.returning else [])
 
 
 class FakeClient:
@@ -120,6 +124,7 @@ class StorageTests(unittest.TestCase):
 
         self.assertIn(("id", "lead-1"), client.queries[0].filters)
         self.assertIn(("user_id", "user-789"), client.queries[0].filters)
+        self.assertTrue(client.queries[0].returning)
 
 
 if __name__ == "__main__":
