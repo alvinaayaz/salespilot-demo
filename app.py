@@ -392,12 +392,18 @@ with st.container(border=True):
     st.write(lead["notes"])
     st.caption(f"Last touch · {lead['last_touch']}")
     st.markdown("#### Suggested next step")
+    def render_readable_notice(message):
+        st.markdown(
+            f"<div style='background:#e7f0e8;border:1px solid #b8cbbb;border-left:5px solid #285b45;border-radius:9px;padding:14px 16px;color:#14231b;font-size:15px;font-weight:600;line-height:1.55'>{message}</div>",
+            unsafe_allow_html=True,
+        )
+
     if priority(sc) == "High":
-        st.info("Prioritize a personal response today. Confirm their use case and offer a relevant next step.")
+        render_readable_notice("Prioritize a personal response today. Confirm their use case and offer a relevant next step.")
     elif priority(sc) == "Medium":
-        st.info("Send a short, helpful note. Ask one clear question to learn more.")
+        render_readable_notice("Send a short, helpful note. Ask one clear question to learn more.")
     else:
-        st.info("Keep this lead warm. Share a useful resource or revisit when you have a stronger signal.")
+        render_readable_notice("Keep this lead warm. Share a useful resource or revisit when you have a stronger signal.")
     st.markdown("#### Reply draft")
     draft = st.text_area("Draft (edit before use)", value=draft_reply(lead), height=145)
     st.caption("Draft only. Nothing is sent from SalesPilot.")
