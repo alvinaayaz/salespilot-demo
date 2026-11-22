@@ -10,9 +10,10 @@ class FakeResponse:
 
 
 class FakeQuery:
-    def __init__(self, table, select_rows=None):
+    def __init__(self, table, select_rows=None, update_rows=True):
         self.table = table
         self.select_rows = select_rows or []
+        self.update_rows = update_rows
         self.filters = []
         self.operation = "select"
         self.payload = None
@@ -48,16 +49,17 @@ class FakeQuery:
         if self.operation == "insert":
             rows = self.payload if isinstance(self.payload, list) else [self.payload]
             return FakeResponse([{**row, "id": f"test-{i}"} for i, row in enumerate(rows)])
-        return FakeResponse([{"id": "test-id"}] if self.returning else [])
+        return FakeResponse([{"id": "test-id"}] if self.returning and self.update_rows else [])
 
 
 class FakeClient:
-    def __init__(self, select_rows=None):
+    def __init__(self, select_rows=None, update_rows=True):
         self.queries = []
         self.select_rows = select_rows or []
+        self.update_rows = update_rows
 
     def table(self, name):
-        query = FakeQuery(name, self.select_rows)
+        query = FakeQuery(name, self.select_rows, self.update_rows)
         self.queries.append(query)
         return query
 
@@ -125,6 +127,19 @@ class StorageTests(unittest.TestCase):
         self.assertIn(("id", "lead-1"), client.queries[0].filters)
         self.assertIn(("user_id", "user-789"), client.queries[0].filters)
         self.assertTrue(client.queries[0].returning)
+
+    def test_update_raises_when_no_owned_record_is_returned(self):
+        client = FakeClient(update_rows=False)
+
+        with self.assertRaisesRegex(RuntimeError, "prospect was not updated"):
+            storage.update_lead(
+                client,
+                "user-789",
+                {"id": "lead-missing", "name": "A", "company": "B", "need": "Need"},
+            )
+
+        self.assertIn(("id", "lead-missing"), client.queries[0].filters)
+        self.assertIn(("user_id", "user-789"), client.queries[0].filters)
 
 
 if __name__ == "__main__":
