@@ -357,7 +357,7 @@ with st.expander("Add a prospect", expanded=total == 0):
 
 with st.expander("Import prospects from CSV"):
     st.caption("Bring an existing prospect list into your workspace. Imports are limited to 500 rows and 2 MB per file.")
-    template = "name,company,role,source,email,need,notes,status\\nJordan Lee,Northstar Digital,Founder,LinkedIn,jordan@example.com,Needs a clearer sales pipeline,Requested a short overview,New\\n"
+    template = "name,company,role,source,email,need,notes,status\nJordan Lee,Northstar Digital,Founder,LinkedIn,jordan@example.com,Needs a clearer sales pipeline,Requested a short overview,New\n"
     st.download_button(
         "Download CSV template",
         template.encode("utf-8"),
