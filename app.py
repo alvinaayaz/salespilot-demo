@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
-from storage import get_supabase_client, load_or_seed_leads, insert_lead, update_lead
+from storage import get_supabase_client, load_or_seed_leads, insert_lead, update_lead, delete_lead
 from presentation import safe_csv_value, safe_html_text
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
@@ -457,6 +457,27 @@ if leads:
                       st.error("The follow-up change could not be saved.")
                       st.stop()
               st.session_state.leads[idx] = updated_lead
+              st.rerun()
+
+      with st.expander("Remove this prospect"):
+          st.warning("This permanently removes the selected prospect from your workspace. This cannot be undone.")
+          confirm_delete = st.checkbox(
+              f"I understand — permanently remove {lead['name']} from my pipeline.",
+              key=f"confirm_delete_{lead.get('id', idx)}",
+          )
+          if st.button("Delete prospect", disabled=not confirm_delete, key=f"delete_lead_{lead.get('id', idx)}"):
+              if PERSISTENT_MODE:
+                  try:
+                      delete_lead(
+                          st.session_state.supabase_client,
+                          st.session_state.supabase_user_id,
+                          lead["id"],
+                      )
+                  except Exception:
+                      st.error("The prospect could not be deleted. Please try again.")
+                      st.stop()
+              st.session_state.leads.pop(idx)
+              st.success("Prospect removed from your pipeline.")
               st.rerun()
 
 with st.container(border=True):
