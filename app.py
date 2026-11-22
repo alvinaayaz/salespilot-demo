@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 from storage import get_supabase_client, load_or_seed_leads, insert_lead, update_lead
-from presentation import safe_html_text
+from presentation import safe_csv_value, safe_html_text
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
 
@@ -456,6 +456,7 @@ with st.container(border=True):
     st.subheader("Export your pipeline")
     st.caption("Download a copy of the prospects in this workspace.")
     export = pd.DataFrame([{**l,"score":score_lead(l),"priority":priority(score_lead(l))} for l in st.session_state.leads])
+    export = export.apply(lambda column: column.map(safe_csv_value))
     st.download_button("Download lead list as CSV", export.to_csv(index=False).encode("utf-8"), "salespilot_demo_leads.csv", "text/csv", type="primary")
     with st.expander("About this demo"):
         st.write("SalesPilot is a portfolio prototype with rule-based lead scoring and reply suggestions. When accounts are enabled, prospect records are stored in Supabase and scoped to the signed-in user. It does not connect to an external CRM or send email, phone, or other outbound messages.")
