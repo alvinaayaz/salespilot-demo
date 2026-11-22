@@ -111,7 +111,8 @@ with hero_l:
     st.markdown("<h1>Make room for<br><em style='color:#285b45'>good conversations.</em></h1>", unsafe_allow_html=True)
     st.markdown("<p style='color:#778078;font-size:14px;max-width:440px;margin-top:13px'>A considered view of your prospects, priorities and the next small step that moves a relationship forward.</p>", unsafe_allow_html=True)
 with hero_r:
-    st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:10px;letter-spacing:1.7px;color:#c7d8cc;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:12px;color:#d5e0d7;margin-top:13px'>{sum(l["status"] == "Follow-up" for l in st.session_state.leads)} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
+    follow_up_count = sum(1 for item in st.session_state.leads if item.get("status") == "Follow-up")
+st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:10px;letter-spacing:1.7px;color:#c7d8cc;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:12px;color:#d5e0d7;margin-top:13px'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
 
 leads = st.session_state.leads
 total = len(leads)
