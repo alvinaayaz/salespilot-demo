@@ -1,61 +1,44 @@
 # SalesPilot
 
-SalesPilot is a lightweight sales workspace for managing a small prospect pipeline.
+SalesPilot is a lightweight sales workspace for independent professionals and small teams who want a clearer way to manage prospects and follow-ups.
 
-## Current capabilities
+**Open SalesPilot:** https://salespilot-demo.streamlit.app/
 
-- Prospect dashboard with pipeline and priority summaries
-- Search and filter by company, contact, stage, and priority
-- Rule-based lead scoring with suggested next steps
-- Add and edit prospect records with basic field validation
-- Update pipeline stage and mark follow-up activity
-- Editable outreach drafts and CSV export
-- Optional Supabase authentication and per-user persistent lead storage
+## What you can do
 
-## Run locally
+- Keep prospect records in one searchable workspace
+- Track each opportunity through a simple pipeline
+- Review transparent, rule-based lead scores and priority signals
+- See suggested next steps for each prospect
+- Prepare and edit outreach drafts without sending anything automatically
+- Export your pipeline to CSV
+
+## Your workspace
+
+Create an account to get a persistent, account-scoped workspace. New accounts start empty: your pipeline contains only the prospects you add. Existing prospect records are preserved.
+
+The hosted app uses Supabase authentication and PostgreSQL storage. Database row-level security policies scope prospect access to the signed-in account. The app uses the public anon/publishable key; a service-role key is not used in the application.
+
+## Product scope
+
+SalesPilot currently focuses on prospect organization and follow-up workflow. Lead scoring and reply suggestions are rule-based, not AI-generated. The app does not currently send email or messages, sync with external CRMs, support team sharing, or provide an in-app password-reset flow.
+
+Use fictional or non-sensitive contact information while evaluating the service. The project is intentionally operated on free hosting and database tiers; availability and performance are subject to those providers' free-plan limits.
+
+## Local development
 
 ```bash
 python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Enable accounts and persistent storage
-
-The app stays in clearly labelled demo mode until both `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured in Streamlit secrets.
-
-1. Create a free Supabase project.
-2. In the Supabase SQL Editor, run the migration in `database/migrations/001_create_leads.sql`.
-3. In Supabase project settings, copy the Project URL and the public anon/publishable key. Never use the service-role key in this app.
-4. In Streamlit Community Cloud, open the app's **Settings → Secrets** and add:
-
-```toml
-SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co"
-SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY"
-```
-
-5. Restart the Streamlit app. Visitors will then see sign-in and account creation instead of the shared sample dashboard.
-
-Supabase Auth email confirmation settings apply to new accounts. The app uses the public anon key and relies on PostgreSQL row-level security; each authenticated account can access only rows whose `user_id` matches its auth user ID.
-
-## Public demo
-
-https://salespilot-demo.streamlit.app/
-
-## Important limitations
-
-- Without Supabase secrets, the public app runs in demo mode with fictional leads held only in Streamlit session state.
-- With Supabase configured, lead records persist in PostgreSQL and are scoped by authenticated user.
-- The app currently has no password-reset screen, team sharing, external CRM connection, AI provider, or outbound email/phone integration.
-- Lead scoring and outreach suggestions are rule-based, not AI-generated. Reply drafts are never sent.
-- CSV exports prefix formula-like user content so spreadsheet applications treat it as text.
-- Supabase leaked-password screening is Pro-plan-only; this project intentionally remains on the Free plan, so the related Security Advisor warning is an accepted limitation under the $0 constraint. Do not enter sensitive or real customer data until account recovery and operational security have been reviewed.
-- Use fictional data until you have reviewed the deployment's privacy, account-recovery, and operational requirements.
+For a persistent local setup, configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` in Streamlit secrets and apply `database/migrations/001_create_leads.sql` to your Supabase project. Never put a service-role key in client-facing application configuration.
 
 ## Validation
 
-GitHub Actions compiles the app and tests, runs the storage and HTML-escaping unit tests, and starts the app with Streamlit AppTest on pushes and pull requests to `main`.
+GitHub Actions compiles the application, runs the unit tests, and performs a Streamlit startup smoke test.
 
-Run the unit tests locally with:
+Run tests locally:
 
 ```bash
 python -m unittest discover -s tests -v
