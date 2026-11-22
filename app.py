@@ -136,21 +136,21 @@ else:
         st.session_state.leads = [dict(x) for x in INITIAL_LEADS]
 
 st.markdown("""<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
-:root{--ink:#14231b;--muted:#35483c;--line:#c4d0c6;--paper:#ffffff;--canvas:#eef2ed;--green:#1e5138;--green-soft:#e5efe7;--rust:#8b3b2b}
-.stApp{background:var(--canvas);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:16px}
-.block-container{max-width:1320px;padding:1.8rem 2.6rem 4rem}
-h1,h2,h3{color:var(--ink);letter-spacing:-.025em}
-h1{font-family:'Instrument Serif',serif!important;font-size:3.8rem!important;font-weight:400!important;line-height:1.04!important;margin:0}
-h2{font-family:'DM Sans',sans-serif!important;font-size:1.35rem!important;font-weight:700!important;letter-spacing:-.02em}
-h3{font-family:'DM Sans',sans-serif!important;font-size:1.12rem!important;font-weight:700!important}
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{--ink:#18231f;--muted:#56645d;--line:#e2e8e3;--paper:#ffffff;--canvas:#f6f8f6;--green:#24634b;--green-soft:#edf5ef;--rust:#c56b43}
+.stApp{background:var(--canvas)!important;color:var(--ink);font-family:'Manrope',sans-serif!important;font-size:15px}
+.block-container{max-width:1360px;padding:2rem 2.8rem 4rem}
+h1,h2,h3{color:var(--ink);letter-spacing:-.035em;font-family:'Space Grotesk','Manrope',sans-serif!important}
+h1{font-family:'Space Grotesk','Manrope',sans-serif!important;font-size:3.65rem!important;font-weight:700!important;line-height:1.06!important;margin:0}
+h2{font-family:'Space Grotesk','Manrope',sans-serif!important;font-size:1.4rem!important;font-weight:700!important;letter-spacing:-.03em}
+h3{font-family:'Space Grotesk','Manrope',sans-serif!important;font-size:1.12rem!important;font-weight:700!important}
 p,[data-testid=stMarkdownContainer] p{line-height:1.7;font-size:1rem;color:#26352c}
 [data-testid=stCaptionContainer],.stCaption{color:#4d5b52!important;font-size:.95rem!important;line-height:1.55}
 label,[data-testid=stWidgetLabel] p{color:#172a20!important;font-size:1.05rem!important;font-weight:700!important}
 [data-testid=stMetric]{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.25rem;box-shadow:0 2px 8px rgba(25,45,32,.04)}
 [data-testid=stMetricLabel]{color:#35483c!important;font-size:1rem!important;font-weight:700!important}
 [data-testid=stMetricValue]{color:var(--ink)!important;font-family:'DM Sans',sans-serif;font-size:2.4rem!important;font-weight:700!important}
-[data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:.7rem;box-shadow:0 2px 10px rgba(25,45,32,.035)}
+[data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:.85rem;box-shadow:0 5px 20px rgba(24,35,31,.045)}
 [data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1.5px solid #87998c!important;border-radius:8px!important;background:#fff!important;color:#17231c!important;font-size:1rem!important}
 [data-testid=stTextArea] textarea{line-height:1.65}
 input::placeholder,textarea::placeholder{color:#526258!important;opacity:1!important}
@@ -186,8 +186,8 @@ if PERSISTENT_MODE:
 st.markdown("""
 <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 18px;border-bottom:1px solid #e5e8e1">
   <div style="display:flex;align-items:center;gap:11px">
-    <div style="width:31px;height:31px;background:#285b45;color:#fffefa;display:grid;place-items:center;font-family:'Instrument Serif',serif;font-size:23px;border-radius:7px">s</div>
-    <span style="font-size:15px;font-weight:700;letter-spacing:-.4px;color:#202923">salespilot</span>
+    <div style="width:34px;height:34px;background:#24634b;color:#ffffff;display:grid;place-items:center;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;border-radius:10px">S</div>
+    <span style="font-size:16px;font-weight:800;letter-spacing:-.6px;color:#18231f">salespilot</span>
     <span style="font-size:12px;letter-spacing:.8px;color:#46564b;margin-left:5px">PRIVATE WORKSPACE</span>
   </div>
   <div style="font-size:13px;color:#46564b;letter-spacing:.3px">SAMPLE DATA &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
@@ -196,12 +196,12 @@ st.markdown("""
 
 hero_l, hero_r = st.columns([1.7, 1], gap="large")
 with hero_l:
-    st.markdown("<div style='margin-top:35px;font-size:13px;letter-spacing:1.4px;font-weight:800;color:#1e5138;margin-bottom:13px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
-    st.markdown("<h1>Your sales,<br><em style='color:#1e5138'>in clear view.</em></h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color:#35483c;font-size:17px;max-width:500px;margin-top:16px;line-height:1.7;color:#46564b'>See every prospect, track what matters, and know who to follow up with next.</p>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:35px;font-size:12px;letter-spacing:1.5px;font-weight:800;color:#24634b;margin-bottom:15px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
+    st.markdown("<h1>Your sales,<br><span style='color:#24634b'>under control.</span></h1>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size:16px;max-width:510px;margin-top:17px;line-height:1.75;color:#56645d'>A clearer view of your prospects, priorities, and next steps — all in one workspace.</p>", unsafe_allow_html=True)
 with hero_r:
     follow_up_count = sum(1 for item in st.session_state.leads if item.get("status") == "Follow-up")
-    st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:13px;letter-spacing:1.3px;color:#f3f7f3;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='margin-top:39px;background:#24634b;border-radius:16px;padding:24px 25px;color:#ffffff;min-height:160px'><div style='font-size:13px;letter-spacing:1.3px;color:#f3f7f3;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:'Space Grotesk',sans-serif;font-size:29px;font-weight:700;line-height:1.12;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
 
 leads = st.session_state.leads
 total = len(leads)
