@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+from storage import get_supabase_client, load_or_seed_leads, insert_lead, update_lead
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
 
@@ -63,8 +64,76 @@ def draft_reply(lead):
         "ideas based on how your team works today?"
     )
 
-if "leads" not in st.session_state:
-    st.session_state.leads = [dict(x) for x in INITIAL_LEADS]
+# Persistent mode activates only after Streamlit secrets are configured.
+try:
+    supabase_url = st.secrets.get("SUPABASE_URL", "")
+    supabase_anon_key = st.secrets.get("SUPABASE_ANON_KEY", "")
+except Exception:
+    supabase_url = ""
+    supabase_anon_key = ""
+
+PERSISTENT_MODE = bool(supabase_url and supabase_anon_key)
+if PERSISTENT_MODE:
+    if "supabase_client" not in st.session_state:
+        try:
+            st.session_state.supabase_client = get_supabase_client(supabase_url, supabase_anon_key)
+        except Exception as exc:
+            st.error("SalesPilot could not connect to its database. Please try again later.")
+            st.stop()
+    if "supabase_user_id" not in st.session_state:
+        st.session_state.supabase_user_id = None
+
+    if not st.session_state.supabase_user_id:
+        st.title("Welcome to SalesPilot")
+        st.caption("Sign in to your private sales workspace, or create a free account.")
+        login_tab, signup_tab = st.tabs(["Sign in", "Create account"])
+        with login_tab:
+            with st.form("salespilot_signin"):
+                login_email = st.text_input("Email address")
+                login_password = st.text_input("Password", type="password")
+                login_submit = st.form_submit_button("Sign in", type="primary", use_container_width=True)
+            if login_submit:
+                try:
+                    auth_result = st.session_state.supabase_client.auth.sign_in_with_password({"email": login_email.strip(), "password": login_password})
+                    st.session_state.supabase_user_id = auth_result.user.id
+                    st.session_state.supabase_user_email = auth_result.user.email
+                    st.rerun()
+                except Exception:
+                    st.error("Sign-in failed. Check your email and password.")
+        with signup_tab:
+            with st.form("salespilot_signup"):
+                signup_email = st.text_input("Email address", key="signup_email")
+                signup_password = st.text_input("Password (at least 8 characters)", type="password", key="signup_password")
+                signup_submit = st.form_submit_button("Create account", type="primary", use_container_width=True)
+            if signup_submit:
+                if len(signup_password) < 8:
+                    st.error("Use a password with at least 8 characters.")
+                else:
+                    try:
+                        signup_result = st.session_state.supabase_client.auth.sign_up({"email": signup_email.strip(), "password": signup_password})
+                        if signup_result.session:
+                            st.session_state.supabase_user_id = signup_result.user.id
+                            st.session_state.supabase_user_email = signup_result.user.email
+                            st.rerun()
+                        else:
+                            st.success("Account created. Check your email to confirm it, then sign in.")
+                    except Exception:
+                        st.error("Account creation failed. This email may already be registered.")
+        st.stop()
+
+    if "leads" not in st.session_state:
+        try:
+            st.session_state.leads = load_or_seed_leads(
+                st.session_state.supabase_client,
+                st.session_state.supabase_user_id,
+                INITIAL_LEADS,
+            )
+        except Exception:
+            st.error("Your workspace could not be loaded. Please refresh and try again.")
+            st.stop()
+else:
+    if "leads" not in st.session_state:
+        st.session_state.leads = [dict(x) for x in INITIAL_LEADS]
 
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
@@ -94,6 +163,16 @@ div[data-testid=stHorizontalBlock]{gap:1rem}
 </style>""", unsafe_allow_html=True)
 
 # A quiet, editorial workspace: clear hierarchy over dashboard clutter
+if PERSISTENT_MODE:
+    account_col, logout_col = st.columns([5, 1])
+    account_col.caption(f"Signed in as {st.session_state.get('supabase_user_email', 'your account')}")
+    if logout_col.button("Sign out", use_container_width=True):
+        st.session_state.supabase_client.auth.sign_out()
+        st.session_state.supabase_user_id = None
+        st.session_state.pop("supabase_user_email", None)
+        st.session_state.pop("leads", None)
+        st.rerun()
+
 st.markdown("""
 <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 18px;border-bottom:1px solid #e5e8e1">
   <div style="display:flex;align-items:center;gap:11px">
@@ -192,7 +271,7 @@ with st.container(border=True):
             elif any(x["name"].casefold() == clean_name.casefold() and x["company"].casefold() == clean_company.casefold() for x in st.session_state.leads):
                 st.error("This contact already exists for that company.")
             else:
-                st.session_state.leads.append({
+                new_lead = {
                     "name": clean_name,
                     "company": clean_company,
                     "role": new_role.strip() or "Not specified",
@@ -202,7 +281,14 @@ with st.container(border=True):
                     "notes": new_notes.strip(),
                     "status": new_status,
                     "last_touch": "Added just now",
-                })
+                }
+                if PERSISTENT_MODE:
+                    try:
+                        new_lead = insert_lead(st.session_state.supabase_client, st.session_state.supabase_user_id, new_lead)
+                    except Exception:
+                        st.error("The prospect could not be saved. Please try again.")
+                        st.stop()
+                st.session_state.leads.append(new_lead)
                 st.success(f"{clean_name} was added to your pipeline.")
                 st.rerun()
 
@@ -246,12 +332,20 @@ with st.container(border=True):
                 elif duplicate:
                     st.error("Another prospect already has this name and company.")
                 else:
-                    st.session_state.leads[idx].update({
+                    updated_lead = {
+                        **st.session_state.leads[idx],
                         "name": clean_edit_name, "company": clean_edit_company,
                         "role": edit_role.strip() or "Not specified", "email": clean_edit_email,
                         "source": edit_source, "need": edit_need.strip(),
                         "notes": edit_notes.strip(), "status": edit_status,
-                    })
+                    }
+                    if PERSISTENT_MODE:
+                        try:
+                            update_lead(st.session_state.supabase_client, st.session_state.supabase_user_id, updated_lead)
+                        except Exception:
+                            st.error("Changes could not be saved. Please try again.")
+                            st.stop()
+                    st.session_state.leads[idx] = updated_lead
                     st.success("Prospect details saved.")
                     st.rerun()
     st.markdown("**Signal / need**")
@@ -272,13 +366,25 @@ with st.container(border=True):
     col1,col2 = st.columns([1,1])
     with col1:
         if st.button("Mark as contacted", use_container_width=True, type="primary"):
-            st.session_state.leads[idx]["status"] = "Contacted"
-            st.session_state.leads[idx]["last_touch"] = "Just now"
+            updated_lead = {**st.session_state.leads[idx], "status": "Contacted", "last_touch": "Just now"}
+            if PERSISTENT_MODE:
+                try:
+                    update_lead(st.session_state.supabase_client, st.session_state.supabase_user_id, updated_lead)
+                except Exception:
+                    st.error("The stage change could not be saved.")
+                    st.stop()
+            st.session_state.leads[idx] = updated_lead
             st.rerun()
     with col2:
         if st.button("Set follow-up", use_container_width=True):
-            st.session_state.leads[idx]["status"] = "Follow-up"
-            st.session_state.leads[idx]["last_touch"] = "Just now"
+            updated_lead = {**st.session_state.leads[idx], "status": "Follow-up", "last_touch": "Just now"}
+            if PERSISTENT_MODE:
+                try:
+                    update_lead(st.session_state.supabase_client, st.session_state.supabase_user_id, updated_lead)
+                except Exception:
+                    st.error("The follow-up change could not be saved.")
+                    st.stop()
+            st.session_state.leads[idx] = updated_lead
             st.rerun()
 
 with st.container(border=True):
