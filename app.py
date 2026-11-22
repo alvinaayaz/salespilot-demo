@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 from storage import get_supabase_client, load_or_seed_leads, insert_lead, insert_leads, update_lead, delete_lead
 from imports import parse_prospect_csv
-from presentation import matches_lead_search, safe_csv_value, safe_html_text
+from presentation import matches_lead_search, safe_csv_value, safe_html_text, sort_leads
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
 
@@ -264,10 +264,11 @@ st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;col
 with st.container(border=True):
     st.subheader("Prospect inbox")
     st.caption("Search your pipeline and filter prospects by stage or priority.")
-    c1,c2,c3 = st.columns([1.5,1,1])
-    search = c1.text_input("Search leads", placeholder="Name, company, or need")
+    c1,c2,c3,c4 = st.columns([1.5,1,1,1.25])
+    search = c1.text_input("Search leads", placeholder="Search any prospect detail")
     stage_filter = c2.selectbox("Pipeline stage",["All"]+["New","Contacted","Qualified","Follow-up","Won","Lost"])
     priority_filter = c3.selectbox("Priority",["All","High","Medium","Low"])
+    sort_option = c4.selectbox("Sort by", ["Priority first", "Score: high to low", "Name: A to Z"])
     view = []
     for lead in leads:
         s = score_lead(lead)
@@ -275,6 +276,7 @@ with st.container(border=True):
         if stage_filter != "All" and lead["status"] != stage_filter: continue
         if priority_filter != "All" and priority(s) != priority_filter: continue
         view.append({**lead,"Score":s,"Priority":priority(s)})
+    view = sort_leads(view, sort_option)
     if view:
         table = pd.DataFrame(view)[["name","company","role","source","status","Score","Priority","last_touch"]]
         table.columns = ["Contact","Company","Role","Source","Stage","Score","Priority","Last touch"]
