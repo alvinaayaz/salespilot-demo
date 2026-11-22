@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from supabase import create_client
+from supabase import Client, create_client
 
 
 LEAD_FIELDS = (
