@@ -210,22 +210,42 @@ m2.metric("High-priority leads", hot)
 m3.metric("Need follow-up", follow)
 m4.metric("Qualified", qualified)
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#35483c;margin:30px 0 14px'>WHERE THINGS STAND</div>", unsafe_allow_html=True)
-left, right = st.columns([1.65,1], gap="large")
+st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#35483c;margin:30px 0 14px'>PIPELINE AT A GLANCE</div>", unsafe_allow_html=True)
+statuses = ["New","Contacted","Qualified","Follow-up","Won","Lost"]
+stage_counts = pd.Series([l["status"] for l in leads]).value_counts()
+priority_levels = ["High","Medium","Low"]
+priority_counts = {p: sum(priority(score_lead(l)) == p for l in leads) for p in priority_levels}
+
+def render_bars(rows, bar_color):
+    max_count = max([count for _, count in rows] + [1])
+    pieces = []
+    for label, count in rows:
+        width = round((count / max_count) * 100) if count else 0
+        pieces.append(
+            f"<div style='display:grid;grid-template-columns:100px 1fr 28px;align-items:center;gap:12px;margin:13px 0'>"
+            f"<span style='font-size:14px;font-weight:600;color:#26382d'>{label}</span>"
+            f"<div style='height:12px;background:#edf1ed;border-radius:20px;overflow:hidden'>"
+            f"<div style='height:100%;width:{width}%;background:{bar_color};border-radius:20px'></div></div>"
+            f"<strong style='font-size:14px;color:#172a20;text-align:right'>{count}</strong></div>"
+        )
+    return "".join(pieces)
+
+left, right = st.columns([1.5,1], gap="large")
 with left:
     with st.container(border=True):
         st.subheader("Lead pipeline")
-        st.caption("Prospects grouped by their current stage")
-        statuses = ["New","Contacted","Qualified","Follow-up","Won","Lost"]
-        counts = pd.Series([l["status"] for l in leads]).value_counts()
-        pipe = pd.DataFrame({"Stage":statuses,"Leads":[int(counts.get(s,0)) for s in statuses]})
-        st.bar_chart(pipe.set_index("Stage"), color="#24543d")
+        st.caption("How many prospects are at each stage")
+        stage_rows = [(s, int(stage_counts.get(s, 0))) for s in statuses if int(stage_counts.get(s, 0)) > 0]
+        if stage_rows:
+            st.markdown(render_bars(stage_rows, "#24543d"), unsafe_allow_html=True)
+        else:
+            st.caption("Your pipeline is empty.")
 with right:
     with st.container(border=True):
         st.subheader("Priority snapshot")
         st.caption("Where your attention may be needed")
-        snap = pd.DataFrame({"Priority":["High","Medium","Low"],"Count":[sum(priority(score_lead(l))==p for l in leads) for p in ["High","Medium","Low"]]})
-        st.bar_chart(snap.set_index("Priority"), color="#9a593e")
+        priority_rows = [(p, priority_counts[p]) for p in priority_levels]
+        st.markdown(render_bars(priority_rows, "#9a593e"), unsafe_allow_html=True)
 
 st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#35483c;margin:30px 0 14px'>YOUR PROSPECTS</div>", unsafe_allow_html=True)
 with st.container(border=True):
@@ -245,12 +265,20 @@ with st.container(border=True):
     if view:
         table = pd.DataFrame(view)[["name","company","role","source","status","Score","Priority","last_touch"]]
         table.columns = ["Contact","Company","Role","Source","Stage","Score","Priority","Last touch"]
-        st.dataframe(table, use_container_width=True, hide_index=True)
+        styled_table = table.style.set_properties(**{
+            "background-color": "#ffffff",
+            "color": "#172a20",
+            "border-color": "#d8e1da",
+            "font-size": "14px",
+        }).set_table_styles([
+            {"selector": "th", "props": [("background-color", "#e8efe9"), ("color", "#172a20"), ("font-weight", "700"), ("border-color", "#d8e1da")]},
+            {"selector": "td", "props": [("background-color", "#ffffff"), ("color", "#172a20"), ("border-color", "#e2e8e3")]},
+        ])
+        st.dataframe(styled_table, use_container_width=True, hide_index=True)
     else:
         st.info("No leads match these filters.")
 
-with st.container(border=True):
-    st.subheader("Add a prospect")
+with st.expander("Add a prospect", expanded=False):
     st.caption("Add someone to your pipeline. Name, company, and need are required.")
     with st.form("add_lead_form", clear_on_submit=True):
         add_a, add_b = st.columns(2)
