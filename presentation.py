@@ -13,3 +13,15 @@ def safe_csv_value(value: object) -> str:
     if re.match(r"^[\t\r\n ]*[=+\-@]", text):
         return "'" + text
     return text
+
+ 
+def matches_lead_search(lead: dict[str, object], query: str) -> bool:
+    """Search all useful prospect fields without case sensitivity."""
+    needle = str(query or "").strip().casefold()
+    if not needle:
+        return True
+    searchable = " ".join(
+        str(lead.get(field, "") or "")
+        for field in ("name", "company", "role", "source", "email", "need", "notes", "status", "last_touch")
+    )
+    return needle in searchable.casefold()
