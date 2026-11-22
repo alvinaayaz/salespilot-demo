@@ -24,7 +24,7 @@ streamlit run app.py
 The app stays in clearly labelled demo mode until both `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured in Streamlit secrets.
 
 1. Create a free Supabase project.
-2. In the Supabase SQL Editor, run the migration in `supabase/migrations/001_create_leads.sql`.
+2. In the Supabase SQL Editor, run the migration in `database/migrations/001_create_leads.sql`.
 3. In Supabase project settings, copy the Project URL and the public anon/publishable key. Never use the service-role key in this app.
 4. In Streamlit Community Cloud, open the app's **Settings → Secrets** and add:
 
