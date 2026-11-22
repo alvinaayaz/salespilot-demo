@@ -47,7 +47,9 @@ https://salespilot-demo.streamlit.app/
 - With Supabase configured, lead records persist in PostgreSQL and are scoped by authenticated user.
 - The app currently has no password-reset screen, team sharing, external CRM connection, AI provider, or outbound email/phone integration.
 - Lead scoring and outreach suggestions are rule-based, not AI-generated. Reply drafts are never sent.
-- CSV exports prefix formula-like user content so spreadsheet applications treat it as text.\n- Supabase leaked-password screening is Pro-plan-only; this project intentionally remains on the Free plan, so the related Security Advisor warning is an accepted limitation under the $0 constraint. Do not enter sensitive or real customer data until account recovery and operational security have been reviewed.\n- Use fictional data until you have reviewed the deployment's privacy, account-recovery, and operational requirements.
+- CSV exports prefix formula-like user content so spreadsheet applications treat it as text.
+- Supabase leaked-password screening is Pro-plan-only; this project intentionally remains on the Free plan, so the related Security Advisor warning is an accepted limitation under the $0 constraint. Do not enter sensitive or real customer data until account recovery and operational security have been reviewed.
+- Use fictional data until you have reviewed the deployment's privacy, account-recovery, and operational requirements.
 
 ## Validation
 
