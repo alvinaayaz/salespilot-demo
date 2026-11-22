@@ -1,8 +1,8 @@
-import html
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 from storage import get_supabase_client, load_or_seed_leads, insert_lead, update_lead
+from presentation import safe_html_text
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
 
@@ -16,11 +16,6 @@ INITIAL_LEADS = [
     {"name":"Leo Martin","company":"Cobalt Creative","role":"Director","source":"LinkedIn","email":"leo@example.test","need":"No clear use case yet.","notes":"Open with discovery question.","status":"New","last_touch":"1 week ago"},
     {"name":"Nina Flores","company":"CloudNine Retail","role":"Customer Experience","source":"Referral","email":"nina@example.test","need":"Reduce time spent on manual lead tracking.","notes":"Follow-up was delayed.","status":"Follow-up","last_touch":"6 days ago"},
 ]
-
-def safe_html_text(value):
-    """Escape user-controlled text before embedding it in trusted HTML markup."""
-    return html.escape(str(value or ""), quote=True)
-
 
 def score_lead(lead):
     score = 35
