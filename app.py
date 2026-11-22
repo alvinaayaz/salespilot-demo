@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
-from storage import get_supabase_client, load_or_seed_leads, insert_lead, update_lead, delete_lead
+from storage import get_supabase_client, load_or_seed_leads, insert_lead, insert_leads, update_lead, delete_lead
+from imports import parse_prospect_csv
 from presentation import safe_csv_value, safe_html_text
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
@@ -353,6 +354,58 @@ with st.expander("Add a prospect", expanded=total == 0):
                 st.session_state.leads.append(new_lead)
                 st.success(f"{clean_name} was added to your pipeline.")
                 st.rerun()
+
+with st.expander("Import prospects from CSV"):
+    st.caption("Bring an existing prospect list into your workspace. Imports are limited to 500 rows and 2 MB per file.")
+    template = "name,company,role,source,email,need,notes,status\\nJordan Lee,Northstar Digital,Founder,LinkedIn,jordan@example.com,Needs a clearer sales pipeline,Requested a short overview,New\\n"
+    st.download_button(
+        "Download CSV template",
+        template.encode("utf-8"),
+        "salespilot_import_template.csv",
+        "text/csv",
+        key="download_import_template",
+    )
+    uploaded_csv = st.file_uploader("Choose a CSV file", type=["csv"], key="prospect_csv_upload")
+    if uploaded_csv is not None:
+        imported_leads, import_errors = parse_prospect_csv(
+            uploaded_csv.getvalue(),
+            st.session_state.leads,
+        )
+        if imported_leads:
+            st.success(f"{len(imported_leads)} prospect(s) are ready to import.")
+            st.dataframe(
+                pd.DataFrame(imported_leads)[["name", "company", "role", "source", "status"]],
+                use_container_width=True,
+                hide_index=True,
+            )
+        if import_errors:
+            st.warning("Some rows need attention:")
+            for message in import_errors[:12]:
+                st.write(f"• {message}")
+            if len(import_errors) > 12:
+                st.caption(f"{len(import_errors) - 12} additional row messages are not shown.")
+        if st.button(
+            f"Import {len(imported_leads)} prospect(s)",
+            type="primary",
+            disabled=not imported_leads,
+            key="confirm_csv_import",
+        ):
+            try:
+                saved_leads = (
+                    insert_leads(
+                        st.session_state.supabase_client,
+                        st.session_state.supabase_user_id,
+                        imported_leads,
+                    )
+                    if PERSISTENT_MODE
+                    else imported_leads
+                )
+            except Exception:
+                st.error("The import could not be saved. No success was reported; please review the file and try again.")
+                st.stop()
+            st.session_state.leads.extend(saved_leads)
+            st.success(f"Imported {len(saved_leads)} prospect(s) into your workspace.")
+            st.rerun()
 
 if leads:
     with st.container(border=True):
