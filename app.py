@@ -86,7 +86,7 @@ if PERSISTENT_MODE:
 
     if not st.session_state.supabase_user_id:
         st.title("Welcome to SalesPilot")
-        st.caption("Sign in to your private sales workspace, or create a free account.")
+        st.caption("Sign in to your sales workspace, or create a free account.")
         login_tab, signup_tab = st.tabs(["Sign in", "Create account"])
         with login_tab:
             with st.form("salespilot_signin"):
@@ -184,7 +184,7 @@ if PERSISTENT_MODE:
         st.session_state.pop("leads", None)
         st.rerun()
 
-workspace_label = "PRIVATE WORKSPACE" if PERSISTENT_MODE else "DEMO WORKSPACE"
+workspace_label = "YOUR WORKSPACE" if PERSISTENT_MODE else "DEMO WORKSPACE"
 workspace_status = "NO OUTBOUND MESSAGES" if PERSISTENT_MODE else "SESSION-ONLY DATA · NO OUTBOUND MESSAGES"
 st.markdown(f"""
 <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 18px;border-bottom:1px solid #e5e8e1">
