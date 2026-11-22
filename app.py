@@ -224,16 +224,19 @@ priority_counts = {p: sum(priority(score_lead(l)) == p for l in leads) for p in 
 
 def render_bars(rows, bar_color):
     max_count = max([count for _, count in rows] + [1])
-    pieces = []
+    pieces = [
+        "<div style='display:flex;flex-direction:column;gap:17px;padding:10px 2px 5px'>"
+    ]
     for label, count in rows:
         width = round((count / max_count) * 100) if count else 0
         pieces.append(
-            f"<div style='display:grid;grid-template-columns:100px 1fr 28px;align-items:center;gap:12px;margin:13px 0'>"
+            "<div style='display:grid;grid-template-columns:94px minmax(70px,1fr) 34px;align-items:center;gap:13px'>"
             f"<span style='font-size:14px;font-weight:600;color:#26382d'>{label}</span>"
-            f"<div style='height:12px;background:#edf1ed;border-radius:20px;overflow:hidden'>"
-            f"<div style='height:100%;width:{width}%;background:{bar_color};border-radius:20px'></div></div>"
-            f"<strong style='font-size:14px;color:#172a20;text-align:right'>{count}</strong></div>"
+            "<div style='height:13px;background:#edf1ed;border:1px solid #dce5dd;border-radius:20px;overflow:hidden'>"
+            f"<div style='height:100%;width:{width}%;min-width:{'4px' if count else '0'};background:{bar_color};border-radius:20px'></div></div>"
+            f"<span style='font-size:14px;font-weight:700;color:#172a20;text-align:right;background:#f1f5f1;border-radius:7px;padding:3px 5px'>{count}</span></div>"
         )
+    pieces.append("</div>")
     return "".join(pieces)
 
 left, right = st.columns([1.5,1], gap="large")
@@ -271,16 +274,28 @@ with st.container(border=True):
     if view:
         table = pd.DataFrame(view)[["name","company","role","source","status","Score","Priority","last_touch"]]
         table.columns = ["Contact","Company","Role","Source","Stage","Score","Priority","Last touch"]
-        styled_table = table.style.set_properties(**{
-            "background-color": "#ffffff",
-            "color": "#172a20",
-            "border-color": "#d8e1da",
-            "font-size": "14px",
-        }).set_table_styles([
-            {"selector": "th", "props": [("background-color", "#e8efe9"), ("color", "#172a20"), ("font-weight", "700"), ("border-color", "#d8e1da")]},
-            {"selector": "td", "props": [("background-color", "#ffffff"), ("color", "#172a20"), ("border-color", "#e2e8e3")]},
-        ])
-        st.dataframe(styled_table, use_container_width=True, hide_index=True)
+        styled_table = (
+            table.style
+            .hide(axis="index")
+            .set_properties(**{
+                "background-color": "#ffffff",
+                "color": "#172a20",
+                "border-color": "#e2e8e3",
+                "font-size": "14px",
+                "padding": "12px 10px",
+                "text-align": "left",
+                "white-space": "nowrap",
+            })
+            .set_table_styles([
+                {"selector": "table", "props": [("width", "100%"), ("border-collapse", "separate"), ("border-spacing", "0"), ("border", "1px solid #d8e1da"), ("border-radius", "10px"), ("overflow", "hidden")]},
+                {"selector": "thead th", "props": [("background-color", "#e8efe9"), ("color", "#172a20"), ("font-weight", "700"), ("font-size", "13px"), ("padding", "12px 10px"), ("border-bottom", "1px solid #cbd8ce")]},
+                {"selector": "tbody tr:nth-child(even) td", "props": [("background-color", "#f6f9f6")]},
+                {"selector": "tbody tr:hover td", "props": [("background-color", "#edf4ee")]},
+                {"selector": "tbody td", "props": [("border-bottom", "1px solid #e2e8e3")]},
+            ])
+            .format(escape="html")
+        )
+        st.table(styled_table)
     else:
         st.info("No leads match these filters.")
 
