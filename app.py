@@ -189,14 +189,16 @@ if PERSISTENT_MODE:
         st.session_state.pop("leads", None)
         st.rerun()
 
-st.markdown("""
+workspace_label = "PRIVATE WORKSPACE" if PERSISTENT_MODE else "DEMO WORKSPACE"
+workspace_status = "NO OUTBOUND MESSAGES" if PERSISTENT_MODE else "SESSION-ONLY DATA · NO OUTBOUND MESSAGES"
+st.markdown(f"""
 <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0 18px;border-bottom:1px solid #e5e8e1">
   <div style="display:flex;align-items:center;gap:11px">
     <div style="width:34px;height:34px;background:#24634b;color:#ffffff;display:grid;place-items:center;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;border-radius:10px">S</div>
     <span style="font-size:16px;font-weight:800;letter-spacing:-.6px;color:#18231f">salespilot</span>
-    <span style="font-size:12px;letter-spacing:.8px;color:#46564b;margin-left:5px">PRIVATE WORKSPACE</span>
+    <span style="font-size:12px;letter-spacing:.8px;color:#46564b;margin-left:5px">{workspace_label}</span>
   </div>
-  <div style="font-size:13px;color:#46564b;letter-spacing:.3px">{"PRIVATE WORKSPACE" if PERSISTENT_MODE else "DEMO MODE · SESSION-ONLY DATA"} &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
+  <div style="font-size:13px;color:#46564b;letter-spacing:.3px">{workspace_status}</div>
 </div>
 """, unsafe_allow_html=True)
 
