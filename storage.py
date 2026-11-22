@@ -69,6 +69,7 @@ def update_lead(client: Client, user_id: str, lead: dict[str, Any]) -> None:
         .update(payload)
         .eq("id", lead_id)
         .eq("user_id", user_id)
+        .select("id")
         .execute()
     )
     if not result.data:
