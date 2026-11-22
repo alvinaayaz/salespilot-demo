@@ -43,6 +43,10 @@ class FakeQuery:
         self.payload = payload
         return self
 
+    def delete(self):
+        self.operation = "delete"
+        return self
+
     def execute(self):
         if self.operation == "select":
             return FakeResponse(self.select_rows)
@@ -127,6 +131,26 @@ class StorageTests(unittest.TestCase):
         self.assertIn(("id", "lead-1"), client.queries[0].filters)
         self.assertIn(("user_id", "user-789"), client.queries[0].filters)
         self.assertTrue(client.queries[0].returning)
+
+    def test_delete_is_scoped_to_user_and_record(self):
+        client = FakeClient()
+        storage.delete_lead(client, "user-789", "lead-1")
+
+        self.assertEqual(client.queries[0].operation, "delete")
+        self.assertIn(("id", "lead-1"), client.queries[0].filters)
+        self.assertIn(("user_id", "user-789"), client.queries[0].filters)
+        self.assertTrue(client.queries[0].returning)
+
+    def test_delete_rejects_missing_id(self):
+        with self.assertRaisesRegex(ValueError, "without its database ID"):
+            storage.delete_lead(FakeClient(), "user-789", "")
+
+    def test_delete_raises_when_no_owned_record_is_returned(self):
+        client = FakeClient(update_rows=False)
+        with self.assertRaisesRegex(RuntimeError, "prospect was not deleted"):
+            storage.delete_lead(client, "user-789", "lead-missing")
+        self.assertIn(("id", "lead-missing"), client.queries[0].filters)
+        self.assertIn(("user_id", "user-789"), client.queries[0].filters)
 
     def test_update_raises_when_no_owned_record_is_returned(self):
         client = FakeClient(update_rows=False)
