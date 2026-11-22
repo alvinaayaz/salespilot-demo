@@ -137,29 +137,33 @@ else:
 
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
-:root{--ink:#202923;--muted:#778078;--line:#e5e8e1;--paper:#fffefa;--canvas:#f6f6f1;--green:#285b45;--green-soft:#edf3ee;--rust:#bd654b}
-.stApp{background:var(--canvas);color:var(--ink);font-family:'DM Sans',sans-serif}
-.block-container{max-width:1190px;padding:1.5rem 2.4rem 4rem}
+:root{--ink:#17231c;--muted:#4d5b52;--line:#d7ded7;--paper:#ffffff;--canvas:#f4f6f2;--green:#24543d;--green-soft:#edf4ee;--rust:#9b4c35}
+.stApp{background:var(--canvas);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:16px}
+.block-container{max-width:1280px;padding:1.6rem 2.5rem 4rem}
 h1,h2,h3{color:var(--ink);letter-spacing:-.025em}
-h1{font-family:'Instrument Serif',serif!important;font-size:3.25rem!important;font-weight:400!important;line-height:1.02!important;margin:0}
-h2{font-family:'DM Sans',sans-serif!important;font-size:1.12rem!important;font-weight:700!important;letter-spacing:-.03em}
-h3{font-family:'DM Sans',sans-serif!important;font-size:1rem!important;font-weight:700!important}
-p{line-height:1.65}
-[data-testid=stCaptionContainer]{color:var(--muted);font-size:.82rem}
-[data-testid=stMetric]{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:1.05rem 1.15rem;box-shadow:none}
-[data-testid=stMetricLabel]{color:var(--muted);font-size:.77rem;font-weight:600}
-[data-testid=stMetricValue]{color:var(--ink);font-family:'Instrument Serif',serif;font-size:2.35rem;font-weight:400}
-[data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:.45rem;box-shadow:none}
-[data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1px solid #dfe4dc!important;border-radius:7px!important;background:#fffefa!important}
+h1{font-family:'Instrument Serif',serif!important;font-size:3.5rem!important;font-weight:400!important;line-height:1.04!important;margin:0}
+h2{font-family:'DM Sans',sans-serif!important;font-size:1.35rem!important;font-weight:700!important;letter-spacing:-.02em}
+h3{font-family:'DM Sans',sans-serif!important;font-size:1.12rem!important;font-weight:700!important}
+p,[data-testid=stMarkdownContainer] p{line-height:1.7;font-size:1rem;color:#26352c}
+[data-testid=stCaptionContainer],.stCaption{color:#4d5b52!important;font-size:.95rem!important;line-height:1.55}
+label,[data-testid=stWidgetLabel] p{color:#26352c!important;font-size:1rem!important;font-weight:600!important}
+[data-testid=stMetric]{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.25rem;box-shadow:0 2px 8px rgba(25,45,32,.04)}
+[data-testid=stMetricLabel]{color:#46564b!important;font-size:.92rem!important;font-weight:700!important}
+[data-testid=stMetricValue]{color:var(--ink)!important;font-family:'DM Sans',sans-serif;font-size:2.25rem!important;font-weight:700!important}
+[data-testid=stVerticalBlockBorderWrapper]{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:.7rem;box-shadow:0 2px 10px rgba(25,45,32,.035)}
+[data-testid=stTextInput] input,[data-testid=stSelectbox] div[data-baseweb=select],[data-testid=stTextArea] textarea{border:1px solid #aebbb0!important;border-radius:8px!important;background:#fff!important;color:#17231c!important;font-size:1rem!important}
 [data-testid=stTextArea] textarea{line-height:1.65}
-.stButton>button,.stDownloadButton>button{border-radius:7px;min-height:2.65rem;font-weight:600;border:1px solid #dce2da;background:#fffefa;color:var(--ink)}
+input::placeholder,textarea::placeholder{color:#66736a!important;opacity:1!important}
+.stButton>button,.stDownloadButton>button{border-radius:8px;min-height:2.9rem;font-size:1rem;font-weight:700;border:1px solid #aebbb0;background:#fff;color:#17231c}
 .stButton>button[kind=primary],.stDownloadButton>button[kind=primary]{background:var(--green);border-color:var(--green);color:#fff}
-.stButton>button[kind=primary]:hover,.stDownloadButton>button[kind=primary]:hover{background:#1d4936;border-color:#1d4936}
-[data-testid=stDataFrame]{border:1px solid var(--line);border-radius:8px;overflow:hidden}
-[data-testid=stAlert]{background:var(--green-soft);border:1px solid #dce8de;border-radius:8px;color:var(--ink)}
-hr{border-color:var(--line);margin:1.55rem 0}
-div[data-testid=stHorizontalBlock]{gap:1rem}
-@media(max-width:700px){.block-container{padding:1rem .85rem 3rem}h1{font-size:2.55rem!important}}
+.stButton>button[kind=primary]:hover,.stDownloadButton>button[kind=primary]:hover{background:#183e2c;border-color:#183e2c;color:#fff}
+[data-testid=stDataFrame]{border:1px solid var(--line);border-radius:9px;overflow:hidden}
+[data-testid=stAlert]{background:var(--green-soft);border:1px solid #cbdccc;border-radius:9px;color:var(--ink)}
+[data-testid=stExpander]{border-color:var(--line)!important}
+hr{border-color:var(--line);margin:1.7rem 0}
+div[data-testid=stHorizontalBlock]{gap:1.1rem}
+button,[role=button]{font-size:1rem}
+@media(max-width:700px){.block-container{padding:1rem .9rem 3rem}h1{font-size:2.8rem!important}[data-testid=stMetricValue]{font-size:1.8rem!important}}
 </style>""", unsafe_allow_html=True)
 
 # A quiet, editorial workspace: clear hierarchy over dashboard clutter
@@ -178,20 +182,20 @@ st.markdown("""
   <div style="display:flex;align-items:center;gap:11px">
     <div style="width:31px;height:31px;background:#285b45;color:#fffefa;display:grid;place-items:center;font-family:'Instrument Serif',serif;font-size:23px;border-radius:7px">s</div>
     <span style="font-size:15px;font-weight:700;letter-spacing:-.4px;color:#202923">salespilot</span>
-    <span style="font-size:10px;letter-spacing:1.1px;color:#778078;margin-left:5px">PRIVATE WORKSPACE</span>
+    <span style="font-size:12px;letter-spacing:.8px;color:#46564b;margin-left:5px">PRIVATE WORKSPACE</span>
   </div>
-  <div style="font-size:11px;color:#778078;letter-spacing:.4px">SAMPLE DATA &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
+  <div style="font-size:13px;color:#46564b;letter-spacing:.3px">SAMPLE DATA &nbsp;·&nbsp; NO OUTBOUND MESSAGES</div>
 </div>
 """, unsafe_allow_html=True)
 
 hero_l, hero_r = st.columns([1.7, 1], gap="large")
 with hero_l:
-    st.markdown("<div style='margin-top:35px;font-size:10px;letter-spacing:2px;font-weight:700;color:#285b45;margin-bottom:13px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:35px;font-size:12px;letter-spacing:1.7px;font-weight:800;color:#24543d;margin-bottom:13px'>YOUR SALES OVERVIEW &nbsp; / &nbsp; 01</div>", unsafe_allow_html=True)
     st.markdown("<h1>Make room for<br><em style='color:#285b45'>good conversations.</em></h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color:#778078;font-size:14px;max-width:440px;margin-top:13px'>A considered view of your prospects, priorities and the next small step that moves a relationship forward.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#778078;font-size:16px;max-width:500px;margin-top:16px;line-height:1.7;color:#46564b'>A considered view of your prospects, priorities and the next small step that moves a relationship forward.</p>", unsafe_allow_html=True)
 with hero_r:
     follow_up_count = sum(1 for item in st.session_state.leads if item.get("status") == "Follow-up")
-st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:10px;letter-spacing:1.7px;color:#c7d8cc;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:12px;color:#d5e0d7;margin-top:13px'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
+st.markdown(f"<div style='margin-top:39px;background:#285b45;border-radius:10px;padding:22px 23px;color:#fffefa;min-height:160px'><div style='font-size:12px;letter-spacing:1.5px;color:#e1ebe3;font-weight:700'>A NOTE FOR TODAY</div><div style='font-family:Instrument Serif,serif;font-size:29px;line-height:1.08;margin-top:16px'>Follow up with<br>intention.</div><div style='font-size:14px;color:#f0f5f1;margin-top:13px;line-height:1.55'>{follow_up_count} conversations are waiting for a thoughtful next touch.</div></div>", unsafe_allow_html=True)
 
 leads = st.session_state.leads
 total = len(leads)
@@ -199,7 +203,7 @@ hot = sum(score_lead(l) >= 75 for l in leads)
 follow = sum(l["status"] == "Follow-up" for l in leads)
 qualified = sum(l["status"] == "Qualified" for l in leads)
 
-st.markdown("<div style='font-size:11px;letter-spacing:1.2px;font-weight:800;color:#8a93a5;margin:28px 0 12px'>THE PIPELINE, AT A GLANCE</div>", unsafe_allow_html=True)
+st.markdown("<div style='font-size:13px;letter-spacing:1px;font-weight:800;color:#46564b;margin:28px 0 12px'>THE PIPELINE, AT A GLANCE</div>", unsafe_allow_html=True)
 m1,m2,m3,m4 = st.columns(4)
 m1.metric("Total prospects", total, help="All sample prospects in this workspace")
 m2.metric("High-priority leads", hot)
