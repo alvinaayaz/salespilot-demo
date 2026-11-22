@@ -51,4 +51,10 @@ https://salespilot-demo.streamlit.app/
 
 ## Validation
 
-GitHub Actions runs a Python syntax check and a Streamlit app-startup smoke test on pushes and pull requests to `main`.
+GitHub Actions compiles the app and tests, runs the storage and HTML-escaping unit tests, and starts the app with Streamlit AppTest on pushes and pull requests to `main`.
+
+Run the unit tests locally with:
+
+```bash
+python -m unittest discover -s tests -v
+```
