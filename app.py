@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 from storage import get_supabase_client, load_or_seed_leads, insert_lead, insert_leads, update_lead, delete_lead
 from imports import parse_prospect_csv
-from presentation import safe_csv_value, safe_html_text
+from presentation import matches_lead_search, safe_csv_value, safe_html_text
 
 st.set_page_config(page_title="SalesPilot | Sales Workspace", page_icon="🎯", layout="wide")
 
@@ -271,7 +271,7 @@ with st.container(border=True):
     view = []
     for lead in leads:
         s = score_lead(lead)
-        if search and search.lower() not in (lead["name"]+" "+lead["company"]+" "+lead["need"]).lower(): continue
+        if search and not matches_lead_search(lead, search): continue
         if stage_filter != "All" and lead["status"] != stage_filter: continue
         if priority_filter != "All" and priority(s) != priority_filter: continue
         view.append({**lead,"Score":s,"Priority":priority(s)})
